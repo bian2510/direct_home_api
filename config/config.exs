@@ -10,6 +10,8 @@ use Mix.Config
 config :direct_home_api,
   ecto_repos: [DirectHomeApi.Repo]
 
+config :bcrypt_elixir, log_rounds: 4
+
 # Configures the endpoint
 config :direct_home_api, DirectHomeApiWeb.Endpoint,
   url: [host: "localhost"],

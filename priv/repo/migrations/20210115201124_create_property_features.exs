@@ -11,6 +11,5 @@ defmodule DirectHomeApi.Repo.Migrations.CreatePropertyFeatures do
 
       timestamps()
     end
-
   end
 end

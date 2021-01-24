@@ -1,5 +1,8 @@
 FROM elixir:1.11.3-alpine
 
+RUN apk update && \
+  apk add git make alpine-sdk
+
 RUN mkdir /app
 
 WORKDIR /app
