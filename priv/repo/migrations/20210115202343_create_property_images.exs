@@ -25,6 +25,5 @@ defmodule DirectHomeApi.Repo.Migrations.CreatePropertyImages do
 
       timestamps()
     end
-
   end
 end

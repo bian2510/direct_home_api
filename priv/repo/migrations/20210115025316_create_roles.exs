@@ -7,6 +7,5 @@ defmodule DirectHomeApi.Repo.Migrations.CreateRoles do
 
       timestamps()
     end
-
   end
 end

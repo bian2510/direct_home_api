@@ -21,7 +21,31 @@ defmodule DirectHomeApi.Address do
   @doc false
   def changeset(address, attrs) do
     address
-    |> cast(attrs, [:country, :city, :locality, :neighborhood, :street, :postal_code, :number, :reference, :latitude, :longitude, :floor])
-    |> validate_required([:country, :city, :locality, :neighborhood, :street, :postal_code, :number, :reference, :latitude, :longitude, :floor])
+    |> cast(attrs, [
+      :country,
+      :city,
+      :locality,
+      :neighborhood,
+      :street,
+      :postal_code,
+      :number,
+      :reference,
+      :latitude,
+      :longitude,
+      :floor
+    ])
+    |> validate_required([
+      :country,
+      :city,
+      :locality,
+      :neighborhood,
+      :street,
+      :postal_code,
+      :number,
+      :reference,
+      :latitude,
+      :longitude,
+      :floor
+    ])
   end
 end

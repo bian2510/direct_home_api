@@ -29,7 +29,47 @@ defmodule DirectHomeApi.PropertyImages do
   @doc false
   def changeset(property_images, attrs) do
     property_images
-    |> cast(attrs, [:image_1, :image_2, :image_3, :image_4, :image_5, :image_6, :image_7, :image_8, :image_9, :image_10, :image_11, :image_12, :image_14, :image_15, :image_16, :image_17, :image_18, :image_19, :image_20])
-    |> validate_required([:image_1, :image_2, :image_3, :image_4, :image_5, :image_6, :image_7, :image_8, :image_9, :image_10, :image_11, :image_12, :image_14, :image_15, :image_16, :image_17, :image_18, :image_19, :image_20])
+    |> cast(attrs, [
+      :image_1,
+      :image_2,
+      :image_3,
+      :image_4,
+      :image_5,
+      :image_6,
+      :image_7,
+      :image_8,
+      :image_9,
+      :image_10,
+      :image_11,
+      :image_12,
+      :image_14,
+      :image_15,
+      :image_16,
+      :image_17,
+      :image_18,
+      :image_19,
+      :image_20
+    ])
+    |> validate_required([
+      :image_1,
+      :image_2,
+      :image_3,
+      :image_4,
+      :image_5,
+      :image_6,
+      :image_7,
+      :image_8,
+      :image_9,
+      :image_10,
+      :image_11,
+      :image_12,
+      :image_14,
+      :image_15,
+      :image_16,
+      :image_17,
+      :image_18,
+      :image_19,
+      :image_20
+    ])
   end
 end

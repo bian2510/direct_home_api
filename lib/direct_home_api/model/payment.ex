@@ -16,7 +16,19 @@ defmodule DirectHomeApi.Payment do
   @doc false
   def changeset(payment, attrs) do
     payment
-    |> cast(attrs, [:currency, :payment_date, :payment_amount, :payment_method, :transaction_number])
-    |> validate_required([:currency, :payment_date, :payment_amount, :payment_method, :transaction_number])
+    |> cast(attrs, [
+      :currency,
+      :payment_date,
+      :payment_amount,
+      :payment_method,
+      :transaction_number
+    ])
+    |> validate_required([
+      :currency,
+      :payment_date,
+      :payment_amount,
+      :payment_method,
+      :transaction_number
+    ])
   end
 end

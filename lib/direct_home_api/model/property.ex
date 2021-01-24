@@ -18,6 +18,13 @@ defmodule DirectHomeApi.Property do
   def changeset(property, attrs) do
     property
     |> cast(attrs, [:description, :price, :currency, :ambient_numbers, :status, :property_type])
-    |> validate_required([:description, :price, :currency, :ambient_numbers, :status, :property_type])
+    |> validate_required([
+      :description,
+      :price,
+      :currency,
+      :ambient_numbers,
+      :status,
+      :property_type
+    ])
   end
 end

@@ -17,6 +17,5 @@ defmodule DirectHomeApi.Repo.Migrations.CreateAddresses do
 
       timestamps()
     end
-
   end
 end
