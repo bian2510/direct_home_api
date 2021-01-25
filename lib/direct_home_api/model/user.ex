@@ -33,25 +33,35 @@ defmodule DirectHomeApi.User do
       :document_type,
       :password
     ])
-    |> validate_required([
-      :name,
-      :last_name,
-      :phone,
-      :email,
-      :photo,
-      :document,
-      :document_type,
-      :password
-    ])
-    |> unique_constraint([:email, :document])
-    |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
   end
 
   def create(user, attrs) do
-    changeset = changeset(user, attrs)
+    changeset =
+      changeset(user, attrs)
+      |> validate_required([
+        :name,
+        :last_name,
+        :phone,
+        :email,
+        :photo,
+        :document,
+        :document_type,
+        :password
+      ])
+      |> unique_constraint([:email, :document])
+      |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do
       true -> Repo.insert(changeset)
+      false -> {:error, changeset.errors}
+    end
+  end
+
+  def update(id, module, user, attrs) do
+    changeset = Repo.get!(module, id) |> changeset(attrs)
+
+    case changeset.valid? do
+      true -> Repo.update(changeset) |> IO.inspect()
       false -> {:error, changeset.errors}
     end
   end

@@ -3,6 +3,6 @@ defmodule DirectHomeApiWeb.HealthController do
 
   def health_check(conn, _params) do
     conn
-    |> send_resp(200, "available")
+    |> json(%{"status" => "available"})
   end
 end

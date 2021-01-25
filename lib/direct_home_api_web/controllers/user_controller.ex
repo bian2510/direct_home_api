@@ -24,13 +24,14 @@ defmodule DirectHomeApiWeb.UserController do
     json(conn, user)
   end
 
-  # def update(conn, %{"id" => id, "book" => book_params}) do
-  #  book = Store.get_book!(id)
-  #
-  #  with {:ok, %Book{} = book} <- Store.update_book(book, book_params) do
-  #    render(conn, "show.json", book: book)
-  #  end
-  # end
+  def update(conn, %{"id" => id, "user" => user_params}) do
+    User.update(id, User, %User{}, user_params)
+    |> case do
+      {:ok, %User{} = user} -> json(conn, user)
+      {:error, _error} -> conn |> put_status(400) |> json(%{error: "error"})
+    end
+  end
+
   #
   # def delete(conn, %{"id" => id}) do
   #  book = Store.get_book!(id)

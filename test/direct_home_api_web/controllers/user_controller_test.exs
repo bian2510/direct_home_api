@@ -1,8 +1,6 @@
 defmodule DirectHomeApiWeb.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
 
-  alias DirectHomeApi.User
-
   @create_attrs %{
     "document" => 95_935_781,
     "document_type" => "dni",
@@ -24,6 +22,11 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     "photo" => nil
   }
 
+  @update_attrs %{
+    "phone" => 1123423422,
+    "photo" => "otra_photo"
+  }
+
   describe "list all users" do
     test "return array empty", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
@@ -38,7 +41,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert 200 = conn.status
       assert {:ok, array} = Jason.decode(conn.resp_body)
       array_length = length(array)
-      assert array_length = 1
+      assert 1 = array_length
     end
   end
 
@@ -85,4 +88,40 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
     end
   end
+
+  #describe "update user" do
+  #  test "return user when data is valid", %{conn: conn, user: %User{id: id} = user} do
+  #    id = post(conn, Routes.user_path(conn, :create, user), user: @create_attrs).resp_body |> Jason.decode!() |> get_in(["id"])
+  #    Repo.get!(User, id)
+  #    conn = put(conn, Routes.user_path(conn, :update, user), book: @update_attrs)
+  #    assert 200 = conn.status |> IO.inspect(label: "ESTATUUS")
+  #    assert {:ok, user} = Jason.decode(conn.resp_body)
+  #    map = %{
+  #      "id" => id,
+  #      "document" => 95_935_781,
+  #      "document_type" => "dni",
+  #      "email" => "bian251091@gmail.com",
+  #      "name" => "Carlos",
+  #      "last_name" => "Hernandez",
+  #      "phone" => 1123423422,
+  #      "photo" => "otra_photo",
+  #      "role_id" => nil
+  #    }
+#
+  #    assert map == user
+  #  end
+
+    #test "return errors when data is invalid", %{conn: conn} do
+    #  conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
+    #  assert 400 = conn.status
+    #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+    #end
+#
+    #test "return errors when email or document exist", %{conn: conn} do
+    #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+    #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+    #  assert 400 = conn.status
+    #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+    #end
+  #end
 end
