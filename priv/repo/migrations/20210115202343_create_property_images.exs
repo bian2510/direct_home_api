@@ -22,8 +22,11 @@ defmodule DirectHomeApi.Repo.Migrations.CreatePropertyImages do
       add :image_18, :string
       add :image_19, :string
       add :image_20, :string
+      add :property_id, references(:properties, on_delete: :nothing)
 
       timestamps()
     end
+
+    create index(:property_images, [:property_id])
   end
 end

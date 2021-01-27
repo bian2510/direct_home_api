@@ -8,6 +8,7 @@ defmodule DirectHomeApi.PropertyFeatures do
     field :livings, :integer
     field :meters, :integer
     field :rooms, :integer
+    belongs_to :property, Property
 
     timestamps()
   end

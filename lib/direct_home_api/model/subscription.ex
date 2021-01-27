@@ -6,8 +6,8 @@ defmodule DirectHomeApi.Subscription do
     field :finish_date, :naive_datetime
     field :initial_date, :naive_datetime
     field :status, :boolean, default: false
-    field :payment_id, :id
-    field :property_id, :id
+    belongs_to :property, Property
+    belongs_to :payment, Payment
 
     timestamps()
   end

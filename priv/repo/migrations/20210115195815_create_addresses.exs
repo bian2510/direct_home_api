@@ -14,8 +14,11 @@ defmodule DirectHomeApi.Repo.Migrations.CreateAddresses do
       add :latitude, :string
       add :longitude, :string
       add :floor, :integer
+      add :property_id, references(:properties, on_delete: :nothing)
 
       timestamps()
     end
+
+    create index(:addresses, [:property_id])
   end
 end

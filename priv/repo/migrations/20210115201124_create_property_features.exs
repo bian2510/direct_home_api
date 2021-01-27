@@ -8,8 +8,11 @@ defmodule DirectHomeApi.Repo.Migrations.CreatePropertyFeatures do
       add :livings, :integer
       add :kitchens, :integer
       add :meters, :integer
+      add :property_id, references(:properties, on_delete: :nothing)
 
       timestamps()
     end
+
+    create index(:property_features, [:property_id])
   end
 end

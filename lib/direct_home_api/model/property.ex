@@ -9,7 +9,9 @@ defmodule DirectHomeApi.Property do
     field :price, :integer
     field :property_type, :string
     field :status, :boolean, default: false
-    field :user_id, :id
+    belongs_to :user, User
+    has_one    :address, Address
+    has_many   :subscriptions, Subscription
 
     timestamps()
   end

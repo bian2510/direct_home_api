@@ -15,7 +15,9 @@ defmodule DirectHomeApi.User do
     field :password, :string
     field :phone, :integer
     field :photo, :string
-    field :role_id, :id
+    field :type, Ecto.Enum, values: [:admin, :client]
+    has_many :payments, Payment
+    has_many :properties, Property
 
     timestamps()
   end

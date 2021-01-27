@@ -11,11 +11,10 @@ defmodule DirectHomeApi.Repo.Migrations.CreateUsers do
       add :document, :integer
       add :document_type, :string
       add :password, :string
-      add :role_id, references(:roles, on_delete: :nothing)
+      add :type, :string
 
       timestamps()
     end
 
-    create index(:users, [:role_id])
   end
 end

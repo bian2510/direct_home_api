@@ -22,6 +22,7 @@ defmodule DirectHomeApi.PropertyImages do
     field :image_7, :string
     field :image_8, :string
     field :image_9, :string
+    belongs_to :property, Property
 
     timestamps()
   end

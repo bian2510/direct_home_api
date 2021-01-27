@@ -14,6 +14,7 @@ defmodule DirectHomeApi.Address do
     field :postal_code, :integer
     field :reference, :string
     field :street, :string
+    belongs_to :property, Property
 
     timestamps()
   end

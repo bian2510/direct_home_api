@@ -8,7 +8,8 @@ defmodule DirectHomeApi.Payment do
     field :payment_date, :date
     field :payment_method, :string
     field :transaction_number, :integer
-    field :user_id, :id
+    belongs_to :user, User
+    has_many   :subscriptions, Subscription
 
     timestamps()
   end
