@@ -4,12 +4,12 @@ defmodule DirectHomeApi.Repo.Migrations.CreateProperties do
   def change do
     create table(:properties) do
       add :description, :string
-      add :price, :integer
-      add :currency, :string
-      add :ambient_numbers, :integer
+      add :price, :integer, null: false
+      add :currency, :string, null: false
+      add :spaces, :integer
       add :status, :boolean, default: false, null: false
-      add :property_type, :string
-      add :user_id, references(:users, on_delete: :nothing)
+      add :property_type, :string, null: false
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
