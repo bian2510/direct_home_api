@@ -1,9 +1,10 @@
-defmodule DirectHomeApi.Property do
+defmodule DirectHomeApi.Model.Property do
   use Ecto.Schema
   import Ecto.Changeset
+  alias DirectHomeApi.Model.{Address, Subscription, User}
 
   schema "properties" do
-    field :ambient_numbers, :integer
+    field :spaces, :integer
     field :currency, :string
     field :description, :string
     field :price, :integer
@@ -19,14 +20,15 @@ defmodule DirectHomeApi.Property do
   @doc false
   def changeset(property, attrs) do
     property
-    |> cast(attrs, [:description, :price, :currency, :ambient_numbers, :status, :property_type])
+    |> cast(attrs, [:description, :price, :currency, :spaces, :status, :property_type, :user_id])
     |> validate_required([
       :description,
       :price,
       :currency,
-      :ambient_numbers,
+      :spaces,
       :status,
-      :property_type
+      :property_type,
+      :user_id
     ])
   end
 end

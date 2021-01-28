@@ -1,12 +1,13 @@
-defmodule DirectHomeApi.PropertyFeatures do
+defmodule DirectHomeApi.Model.PropertyFeatures do
   use Ecto.Schema
   import Ecto.Changeset
+  alias DirectHomeApi.Model.Property
 
   schema "property_features" do
     field :bathrooms, :integer
     field :kitchens, :integer
     field :livings, :integer
-    field :meters, :integer
+    field :size, :integer
     field :rooms, :integer
     belongs_to :property, Property
 
@@ -16,7 +17,7 @@ defmodule DirectHomeApi.PropertyFeatures do
   @doc false
   def changeset(property_features, attrs) do
     property_features
-    |> cast(attrs, [:bathrooms, :rooms, :livings, :kitchens, :meters])
-    |> validate_required([:bathrooms, :rooms, :livings, :kitchens, :meters])
+    |> cast(attrs, [:bathrooms, :rooms, :livings, :kitchens, :size, :property_id])
+    |> validate_required([:bathrooms, :rooms, :livings, :kitchens, :size, :property_id])
   end
 end

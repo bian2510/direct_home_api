@@ -1,15 +1,15 @@
-defmodule DirectHomeApi.Payment do
+defmodule DirectHomeApi.Model.Payment do
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "payments" do
     field :currency, :string
     field :payment_amount, :integer
-    field :payment_date, :date
+    field :payment_date, :naive_datetime
     field :payment_method, :string
     field :transaction_number, :integer
-    belongs_to :user, User
-    has_many   :subscriptions, Subscription
+    field :customer_name, :string
+    field :customer_email, :string
 
     timestamps()
   end
@@ -22,14 +22,18 @@ defmodule DirectHomeApi.Payment do
       :payment_date,
       :payment_amount,
       :payment_method,
-      :transaction_number
+      :transaction_number,
+      :customer_name,
+      :customer_email
     ])
     |> validate_required([
       :currency,
       :payment_date,
       :payment_amount,
       :payment_method,
-      :transaction_number
+      :transaction_number,
+      :customer_name,
+      :customer_email
     ])
   end
 end

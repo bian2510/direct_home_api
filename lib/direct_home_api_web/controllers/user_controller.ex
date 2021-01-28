@@ -1,7 +1,7 @@
 defmodule DirectHomeApiWeb.UserController do
   use DirectHomeApiWeb, :controller
 
-  alias DirectHomeApi.User
+  alias DirectHomeApi.Model.User
   alias DirectHomeApi.Repo
 
   @derive {Jason.Encoder, except: [:__meta__]}

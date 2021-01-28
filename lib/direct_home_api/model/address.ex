@@ -1,6 +1,7 @@
-defmodule DirectHomeApi.Address do
+defmodule DirectHomeApi.Model.Address do
   use Ecto.Schema
   import Ecto.Changeset
+  alias DirectHomeApi.Model.Property
 
   schema "addresses" do
     field :city, :string
@@ -9,7 +10,6 @@ defmodule DirectHomeApi.Address do
     field :latitude, :string
     field :locality, :string
     field :longitude, :string
-    field :neighborhood, :string
     field :number, :integer
     field :postal_code, :integer
     field :reference, :string
@@ -26,27 +26,27 @@ defmodule DirectHomeApi.Address do
       :country,
       :city,
       :locality,
-      :neighborhood,
       :street,
       :postal_code,
       :number,
       :reference,
       :latitude,
       :longitude,
-      :floor
+      :floor,
+      :property_id
     ])
     |> validate_required([
       :country,
       :city,
       :locality,
-      :neighborhood,
       :street,
       :postal_code,
       :number,
       :reference,
       :latitude,
       :longitude,
-      :floor
+      :floor,
+      :property_id
     ])
   end
 end
