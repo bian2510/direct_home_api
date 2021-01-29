@@ -48,7 +48,10 @@ defmodule DirectHomeApi.User do
         :document_type,
         :password
       ])
-      |> unique_constraint([:email, :document])
+      |> unique_constraint([:email])
+      |> unique_constraint([:document])
+      |> unsafe_validate_unique([:email], Repo)
+      |> unsafe_validate_unique([:document], Repo)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do

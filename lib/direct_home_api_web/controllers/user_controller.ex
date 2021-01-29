@@ -32,12 +32,9 @@ defmodule DirectHomeApiWeb.UserController do
     end
   end
 
-  #
-  # def delete(conn, %{"id" => id}) do
-  #  book = Store.get_book!(id)
-  #
-  #  with {:ok, %Book{}} <- Store.delete_book(book) do
-  #    send_resp(conn, :no_content, "")
-  #  end
-  # end
+
+ def delete(conn, %{"id" => id}) do
+  Repo.get!(User, id) |> Repo.delete()
+  conn |> put_status(400) |> json(%{})
+  end
 end
