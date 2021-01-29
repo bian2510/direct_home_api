@@ -35,6 +35,6 @@ defmodule DirectHomeApiWeb.UserController do
 
  def delete(conn, %{"id" => id}) do
   Repo.get!(User, id) |> Repo.delete()
-  conn |> put_status(400) |> json(%{})
+  conn |> put_status(201) |> json(%{})
   end
 end
