@@ -1,8 +1,8 @@
-defmodule DirectHomeApi.User do
+defmodule DirectHomeApi.Model.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Repo
+  alias DirectHomeApi.Model.{Repo, Property}
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -15,7 +15,8 @@ defmodule DirectHomeApi.User do
     field :password, :string
     field :phone, :integer
     field :photo, :string
-    field :role_id, :id
+    field :type, Ecto.Enum, values: [:admin, :client]
+    has_many :properties, Property
 
     timestamps()
   end
