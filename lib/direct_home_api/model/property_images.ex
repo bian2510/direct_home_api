@@ -20,6 +20,6 @@ defmodule DirectHomeApi.Model.PropertyImages do
     |> validate_required([
       :image,
       :property_id
-     ])
+    ])
   end
 end

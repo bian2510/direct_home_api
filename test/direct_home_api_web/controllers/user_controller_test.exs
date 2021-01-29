@@ -23,7 +23,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   }
 
   @update_attrs %{
-    "phone" => 1123423422,
+    "phone" => 1_123_423_422,
     "photo" => "otra_photo"
   }
 
@@ -89,7 +89,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
   end
 
-  #describe "update user" do
+  # describe "update user" do
   #  test "return user when data is valid", %{conn: conn, user: %User{id: id} = user} do
   #    id = post(conn, Routes.user_path(conn, :create, user), user: @create_attrs).resp_body |> Jason.decode!() |> get_in(["id"])
   #    Repo.get!(User, id)
@@ -107,21 +107,21 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   #      "photo" => "otra_photo",
   #      "role_id" => nil
   #    }
-#
+  #
   #    assert map == user
   #  end
 
-    #test "return errors when data is invalid", %{conn: conn} do
-    #  conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
-    #  assert 400 = conn.status
-    #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
-    #end
-#
-    #test "return errors when email or document exist", %{conn: conn} do
-    #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-    #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-    #  assert 400 = conn.status
-    #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
-    #end
-  #end
+  # test "return errors when data is invalid", %{conn: conn} do
+  #  conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
+  #  assert 400 = conn.status
+  #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+  # end
+  #
+  # test "return errors when email or document exist", %{conn: conn} do
+  #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+  #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+  #  assert 400 = conn.status
+  #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+  # end
+  # end
 end
