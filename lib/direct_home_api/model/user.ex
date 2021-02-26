@@ -2,7 +2,8 @@ defmodule DirectHomeApi.Model.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Model.{Repo, Property}
+  alias DirectHomeApi.Repo
+  alias DirectHomeApi.Model.Property
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -32,8 +33,17 @@ defmodule DirectHomeApi.Model.User do
       :photo,
       :document,
       :document_type,
-      :password
+      :password,
+      :type
     ])
+  end
+
+  def all(user) do
+    Repo.all(user) |> Repo.preload([:properties])
+  end
+
+  def show(user, id) do
+    Repo.get!(user, id) |> Repo.preload([:properties])
   end
 
   def create(user, attrs) do
@@ -47,7 +57,8 @@ defmodule DirectHomeApi.Model.User do
         :photo,
         :document,
         :document_type,
-        :password
+        :password,
+        :type
       ])
       |> unique_constraint([:email])
       |> unique_constraint([:document])
@@ -56,7 +67,7 @@ defmodule DirectHomeApi.Model.User do
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do
-      true -> Repo.insert(changeset)
+      true ->  Repo.insert!(changeset) |> Repo.preload([:properties])
       false -> {:error, changeset.errors}
     end
   end
@@ -65,8 +76,12 @@ defmodule DirectHomeApi.Model.User do
     changeset = Repo.get!(module, id) |> changeset(attrs)
 
     case changeset.valid? do
-      true -> Repo.update(changeset) |> IO.inspect()
+      true -> Repo.update!(changeset) |> Repo.preload([:properties])
       false -> {:error, changeset.errors}
     end
+  end
+
+  def delete(user, id) do
+    Repo.get!(user, id) |> Repo.delete()
   end
 end

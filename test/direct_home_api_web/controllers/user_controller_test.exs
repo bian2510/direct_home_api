@@ -10,7 +10,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     "phone" => 1_173_677_873,
     "password" => "boni2510*",
     "photo" => "algunaphoto",
-    "role_id" => nil
+    "type" => "client"
   }
 
   @invalid_attrs %{
@@ -69,7 +69,8 @@ defmodule DirectHomeApiWeb.UserControllerTest do
         "last_name" => "Hernandez",
         "phone" => 1_173_677_873,
         "photo" => "algunaphoto",
-        "role_id" => nil
+        "properties" => [],
+        "type" => "client"
       }
 
       assert map == user
