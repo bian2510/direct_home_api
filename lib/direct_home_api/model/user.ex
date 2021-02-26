@@ -67,7 +67,7 @@ defmodule DirectHomeApi.Model.User do
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do
-      true ->  Repo.insert!(changeset) |> Repo.preload([:properties])
+      true -> Repo.insert!(changeset) |> Repo.preload([:properties])
       false -> {:error, changeset.errors}
     end
   end
