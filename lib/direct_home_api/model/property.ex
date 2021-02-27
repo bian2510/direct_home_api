@@ -11,8 +11,8 @@ defmodule DirectHomeApi.Model.Property do
     field :property_type, :string
     field :status, :boolean, default: false
     belongs_to :user, User
-    has_one    :address, Address
-    has_many   :subscriptions, Subscription
+    has_one :address, Address
+    has_many :subscriptions, Subscription
 
     timestamps()
   end
