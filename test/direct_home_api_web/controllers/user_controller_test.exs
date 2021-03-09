@@ -86,7 +86,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert 400 = conn.status
-      assert {:ok, %{"error" => "error"}} =  IO.inspect(conn.resp_body, label: "Esto es lo q tal")  #Jason.decode(conn.resp_body)
+      assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
     end
   end
 
