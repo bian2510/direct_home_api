@@ -63,7 +63,7 @@ defmodule DirectHomeApi.Model.User do
       |> validate_format(:email, ~r/@/)    
       |> unsafe_validate_unique([:email], Repo)
       |> validate_length(:phone, min: 10)
-      |> validate_length(:password, min: 10)
+      |> validate_length(:password, min: 8)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do
