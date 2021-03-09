@@ -2,6 +2,7 @@ defmodule DirectHomeApi.Model.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias DirectHomeApi.Errors.ErrorsHandler
   alias DirectHomeApi.Repo
   alias DirectHomeApi.Model.Property
 
@@ -55,20 +56,19 @@ defmodule DirectHomeApi.Model.User do
         :phone,
         :email,
         :photo,
-        :document,
-        :document_type,
         :password,
         :type
       ])
-      |> unique_constraint([:email])
-      |> unique_constraint([:document])
+      |> unique_constraint([:email])  
+      |> validate_format(:email, ~r/@/)    
       |> unsafe_validate_unique([:email], Repo)
-      |> unsafe_validate_unique([:document], Repo)
+      |> validate_length(:phone, min: 10)
+      |> validate_length(:password, min: 10)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
 
     case changeset.valid? do
       true -> Repo.insert!(changeset) |> Repo.preload([:properties])
-      false -> {:error, changeset.errors}
+      false -> {:error, ErrorsHandler.changeset_error_to_map(changeset)}
     end
   end
 
@@ -77,7 +77,7 @@ defmodule DirectHomeApi.Model.User do
 
     case changeset.valid? do
       true -> Repo.update!(changeset) |> Repo.preload([:properties])
-      false -> {:error, changeset.errors}
+      false -> {:error, ErrorsHandler.changeset_error_to_map(changeset)}
     end
   end
 
