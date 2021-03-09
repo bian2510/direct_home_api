@@ -95,7 +95,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   #    id = post(conn, Routes.user_path(conn, :create, user), user: @create_attrs).resp_body |> Jason.decode!() |> get_in(["id"])
   #    Repo.get!(User, id)
   #    conn = put(conn, Routes.user_path(conn, :update, user), book: @update_attrs)
-  #    assert 200 = conn.status |> IO.inspect(label: "ESTATUS")
+  #    assert 200 = conn.status |> IO.inspect(label: "ESTATUUS")
   #    assert {:ok, user} = Jason.decode(conn.resp_body)
   #    map = %{
   #      "id" => id,
