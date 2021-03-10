@@ -2,7 +2,6 @@ defmodule DirectHomeApiWeb.UserController do
   use DirectHomeApiWeb, :controller
 
   alias DirectHomeApi.Model.User
-  alias DirectHomeApi.Repo
 
   def index(conn, _params) do
     json(conn, User.all(User))
@@ -12,7 +11,7 @@ defmodule DirectHomeApiWeb.UserController do
     User.create(%User{}, user_params)
     |> case do
       %User{} = user -> json(conn, user)
-      {:error, error} -> conn |> put_status(400) |> json(%{error: "error"})
+      {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
   end
 
@@ -24,7 +23,7 @@ defmodule DirectHomeApiWeb.UserController do
     User.update(id, User, %User{}, user_params)
     |> case do
       %User{} = user -> json(conn, user)
-      {:error, _error} -> conn |> put_status(400) |> json(%{error: "error"})
+      {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
   end
 
