@@ -1,7 +1,11 @@
 defmodule DirectHomeApi.Model.Property do
   use Ecto.Schema
   import Ecto.Changeset
-  alias DirectHomeApi.Model.{Address, Subscription, User}
+
+  alias DirectHomeApi.Model.{Address, Subscription, User, PropertyFeatures}
+  alias DirectHomeApi.Repo
+
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :user]}
 
   schema "properties" do
     field :spaces, :integer
@@ -12,6 +16,7 @@ defmodule DirectHomeApi.Model.Property do
     field :status, :boolean, default: false
     belongs_to :user, User
     has_one :address, Address
+    has_one :property_features, PropertyFeatures
     has_many :subscriptions, Subscription
 
     timestamps()

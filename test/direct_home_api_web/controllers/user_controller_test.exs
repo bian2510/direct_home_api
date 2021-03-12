@@ -1,6 +1,11 @@
 defmodule DirectHomeApiWeb.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
 
+  alias DirectHomeApi.Model.User
+  alias DirectHomeApi.Repo
+
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
+
   @create_attrs %{
     "document" => 95_935_781,
     "document_type" => "dni",
@@ -125,4 +130,20 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
   # end
   # end
+
+  def create_user() do
+    Repo.insert!(%User{
+      name: "Fabian",
+      last_name: "Hernandez",
+      phone: random_num(),
+      email: "bian#{random_num()}@gmail.com",
+      photo: "unaphoto",
+      document: random_num(),
+      document_type: "DNI",
+      password: "password",
+      type: :client
+    })
+  end
+
+  defp random_num, do: Enum.random(100_000_000..999_999_999)
 end
