@@ -11,6 +11,11 @@ defmodule DirectHomeApiWeb.PropertyController do
     json(conn, properties)
   end
 
-  def create(conn(%{"property" => property_params})) do
+  def create(conn, %{"property" => property_params}) do
+    Property.create(%Property{}, property_params)
+    |> case do
+      %Property{} = property -> json(conn, property)
+      {:error, error} -> conn |> put_status(400) |> json(%{error: "error"})
+    end
   end
 end

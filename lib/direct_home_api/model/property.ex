@@ -25,15 +25,22 @@ defmodule DirectHomeApi.Model.Property do
   @doc false
   def changeset(property, attrs) do
     property
-    |> cast(attrs, [:description, :price, :currency, :spaces, :status, :property_type, :user_id])
+    |> cast(attrs, [:description, :price, :currency, :spaces, :property_type, :user_id])
     |> validate_required([
       :description,
       :price,
       :currency,
       :spaces,
-      :status,
       :property_type,
       :user_id
     ])
+  end
+
+  def create(property, attrs) do
+    changeset = changeset(property, attrs)
+    case changeset.valid? do
+      true -> Repo.insert!(changeset) |> Repo.preload([:address, :property_features, :subscriptions])
+      false -> {:error, changeset.errors}
+    end
   end
 end
