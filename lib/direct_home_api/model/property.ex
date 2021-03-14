@@ -2,6 +2,7 @@ defmodule DirectHomeApi.Model.Property do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias DirectHomeApi.Errors.ErrorHandler
   alias DirectHomeApi.Model.{Address, Subscription, User, PropertyFeatures}
   alias DirectHomeApi.Repo
 
@@ -44,7 +45,7 @@ defmodule DirectHomeApi.Model.Property do
         Repo.insert!(changeset) |> Repo.preload([:address, :property_features, :subscriptions])
 
       false ->
-        {:error, changeset.errors}
+        {:error, ErrorHandler.changeset_error_to_map(changeset)}
     end
   end
 end
