@@ -1,6 +1,11 @@
 defmodule DirectHomeApiWeb.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
 
+  alias DirectHomeApi.Model.User
+  alias DirectHomeApi.Repo
+
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
+
   @create_attrs %{
     "document" => 95_935_781,
     "document_type" => "dni",
@@ -14,7 +19,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   }
 
   @invalid_attrs %{
-    "document" => "cuil",
+    "document" => "otro beta",
     "document_type" => nil,
     "email" => nil,
     "phone" => nil,
@@ -36,21 +41,56 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return array with users", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+      user1 = create_user()
+      user2 = create_user()
       conn = get(conn, Routes.user_path(conn, :index))
       assert 200 = conn.status
-      assert {:ok, array} = Jason.decode(conn.resp_body)
-      array_length = length(array)
-      assert 1 = array_length
+
+      assert {:ok,
+              [
+                %{
+                  "document" => document1,
+                  "document_type" => document_type1,
+                  "email" => email1,
+                  "name" => name1,
+                  "last_name" => last_name1,
+                  "phone" => phone1,
+                  "photo" => photo1,
+                  "type" => type1,
+                  "properties" => []
+                },
+                %{
+                  "document" => document2,
+                  "document_type" => document_type2,
+                  "email" => email2,
+                  "name" => name2,
+                  "last_name" => last_name2,
+                  "phone" => phone2,
+                  "photo" => photo2,
+                  "type" => type2,
+                  "properties" => []
+                }
+              ]} = Jason.decode(conn.resp_body)
     end
   end
 
   describe "show user" do
     test "return a specific user", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      id = Jason.decode!(conn.resp_body)["id"]
+      id = create_user().id
       conn = get(conn, Routes.user_path(conn, :show, id))
       assert 200 = conn.status
+
+      assert %{
+               "document" => document2,
+               "document_type" => document_type2,
+               "email" => email2,
+               "name" => name2,
+               "last_name" => last_name2,
+               "phone" => phone2,
+               "photo" => photo2,
+               "type" => type2,
+               "properties" => []
+             } = Jason.decode!(conn.resp_body)
     end
   end
 
@@ -76,17 +116,34 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert map == user
     end
 
-    test "return errors when data is invalid", %{conn: conn} do
+    test "return errors when data is invalid or is missing required params", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert 400 = conn.status
-      assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+
+      assert {:ok,
+              %{
+                "error" => %{
+                  "document" => ["is invalid"],
+                  "email" => ["can't be blank"],
+                  "last_name" => ["can't be blank"],
+                  "name" => ["can't be blank"],
+                  "type" => ["can't be blank"]
+                }
+              }} = Jason.decode(conn.resp_body)
     end
 
     test "return errors when email or document exist", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert 400 = conn.status
-      assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
+
+      assert {:ok,
+              %{
+                "error" => %{
+                  "email" => "has already been taken",
+                  "document" => "has already been taken"
+                }
+              }} = Jason.decode(conn.resp_body)
     end
   end
 
@@ -125,4 +182,20 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
   # end
   # end
+
+  def create_user() do
+    Repo.insert!(%User{
+      name: "Fabian",
+      last_name: "Hernandez",
+      phone: random_num(),
+      email: "bian#{random_num()}@gmail.com",
+      photo: "unaphoto",
+      document: random_num(),
+      document_type: "DNI",
+      password: "password",
+      type: :client
+    })
+  end
+
+  defp random_num, do: Enum.random(100_000_000..999_999_999)
 end

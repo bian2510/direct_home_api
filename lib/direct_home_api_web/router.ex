@@ -8,6 +8,7 @@ defmodule DirectHomeApiWeb.Router do
   scope "/api", DirectHomeApiWeb do
     pipe_through :api
     resources "/users", UserController
+    resources "/properties", PropertyController
     get "/health_check", HealthController, :health_check
   end
 
