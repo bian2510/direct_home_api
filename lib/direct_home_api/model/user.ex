@@ -53,9 +53,7 @@ defmodule DirectHomeApi.Model.User do
       |> validate_required([
         :name,
         :last_name,
-        :phone,
         :email,
-        :photo,
         :password,
         :type
       ])
