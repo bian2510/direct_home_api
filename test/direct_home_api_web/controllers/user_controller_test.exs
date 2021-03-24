@@ -134,6 +134,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
               }} = Jason.decode(conn.resp_body)
     end
 
+
     test "return errors when email exist", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)

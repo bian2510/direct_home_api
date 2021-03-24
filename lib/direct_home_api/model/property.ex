@@ -37,15 +37,7 @@ defmodule DirectHomeApi.Model.Property do
     ])
   end
 
-  def create(property, attrs) do
+  def changeset_create(property, attrs) do
     changeset = changeset(property, attrs)
-
-    case changeset.valid? do
-      true ->
-        Repo.insert!(changeset) |> Repo.preload([:address, :property_features, :subscriptions])
-
-      false ->
-        {:error, ErrorHandler.changeset_error_to_map(changeset)}
-    end
   end
 end
