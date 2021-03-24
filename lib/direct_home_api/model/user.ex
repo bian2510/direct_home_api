@@ -55,17 +55,4 @@ defmodule DirectHomeApi.Model.User do
       |> validate_length(:password, min: 8)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
   end
-
-  def update(id, module, user, attrs) do
-    changeset = Repo.get!(module, id) |> changeset(attrs)
-
-    case changeset.valid? do
-      true -> Repo.update!(changeset) |> Repo.preload([:properties])
-      false -> {:error, ErrorHandler.changeset_error_to_map(changeset)}
-    end
-  end
-
-  def delete(user, id) do
-    Repo.get!(user, id) |> Repo.delete()
-  end
 end
