@@ -24,6 +24,7 @@ defmodule DirectHomeApi.Model.User do
   end
 
   @doc false
+  #Falta agregar validaciones de documento y sus tests
   def changeset(user, attrs) do
     user
     |> cast(attrs, [
