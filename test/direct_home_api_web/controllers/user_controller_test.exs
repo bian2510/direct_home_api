@@ -133,7 +133,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return errors when email or document exist", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+      post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert 400 = conn.status
 

@@ -39,15 +39,7 @@ defmodule DirectHomeApi.Model.User do
     ])
   end
 
-  def all(user) do
-    Repo.all(user) |> Repo.preload([:properties])
-  end
-
-  def show(user, id) do
-    Repo.get!(user, id) |> Repo.preload([:properties])
-  end
-
-  def create(user, attrs) do
+  def changeset_create(user, attrs) do
     changeset =
       changeset(user, attrs)
       |> validate_required([
@@ -62,23 +54,5 @@ defmodule DirectHomeApi.Model.User do
       |> unsafe_validate_unique([:email], Repo)
       |> validate_length(:password, min: 8)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
-
-    case changeset.valid? do
-      true -> Repo.insert!(changeset) |> Repo.preload([:properties])
-      false -> {:error, ErrorHandler.changeset_error_to_map(changeset)}
-    end
-  end
-
-  def update(id, module, user, attrs) do
-    changeset = Repo.get!(module, id) |> changeset(attrs)
-
-    case changeset.valid? do
-      true -> Repo.update!(changeset) |> Repo.preload([:properties])
-      false -> {:error, ErrorHandler.changeset_error_to_map(changeset)}
-    end
-  end
-
-  def delete(user, id) do
-    Repo.get!(user, id) |> Repo.delete()
   end
 end
