@@ -4,6 +4,8 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   alias DirectHomeApi.Model.User
   alias DirectHomeApi.Repo
 
+  #Falta agregar validaciones de documento y sus tests
+
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
   @create_attrs %{
@@ -132,16 +134,16 @@ defmodule DirectHomeApiWeb.UserControllerTest do
               }} = Jason.decode(conn.resp_body)
     end
 
-    test "return errors when email or document exist", %{conn: conn} do
-      post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+
+    test "return errors when email exist", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert 400 = conn.status
 
       assert {:ok,
               %{
                 "error" => %{
-                  "email" => "has already been taken",
-                  "document" => "has already been taken"
+                  "email" => ["has already been taken"]
                 }
               }} = Jason.decode(conn.resp_body)
     end
