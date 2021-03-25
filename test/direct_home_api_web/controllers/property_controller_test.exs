@@ -1,7 +1,7 @@
 defmodule DirectHomeApiWeb.PropertyControllerTest do
   use DirectHomeApiWeb.ConnCase
 
-  alias DirectHomeApi.Model.{Property, User}
+  alias DirectHomeApi.Model.Property
   alias DirectHomeApi.Repo
   alias DirectHomeApiWeb.UserControllerTest
 
@@ -41,29 +41,29 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
 
       assert [
                %{
-                 "address" => address,
-                 "currency" => currency,
-                 "description" => description,
-                 "id" => id,
-                 "price" => price,
-                 "property_type" => property_type,
-                 "spaces" => spaces,
-                 "status" => status,
+                 "address" => _address,
+                 "currency" => _currency,
+                 "description" => _description,
+                 "id" => _id,
+                 "price" => _price,
+                 "property_type" => _property_type,
+                 "spaces" => _spaces,
+                 "status" => _status,
                  "subscriptions" => [],
-                 "user_id" => user_id
+                 "user_id" => _user_id
                },
                %{
-                 "address" => address2,
-                 "currency" => currency2,
-                 "description" => description2,
-                 "id" => id2,
-                 "price" => price2,
-                 "property_type" => property_type2,
-                 "property_features" => property_features2,
-                 "spaces" => spaces2,
-                 "status" => status2,
+                 "address" => _address2,
+                 "currency" => _currency2,
+                 "description" => _description2,
+                 "id" => _id2,
+                 "price" => _price2,
+                 "property_type" => _property_type2,
+                 "property_features" => _property_features2,
+                 "spaces" => _spaces2,
+                 "status" => _status2,
                  "subscriptions" => [],
-                 "user_id" => user_id2
+                 "user_id" => _user_id2
                }
              ] = Jason.decode!(conn.resp_body)
     end
@@ -78,17 +78,17 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
 
       assert {:ok,
               %{
-                "address" => address2,
-                "currency" => currency2,
-                "description" => description2,
-                "id" => id2,
-                "price" => price2,
-                "property_type" => property_type2,
-                "property_features" => property_features2,
-                "spaces" => spaces2,
-                "status" => status2,
+                "address" => _address,
+                "currency" => _currency,
+                "description" => _description,
+                "id" => _id,
+                "price" => _price,
+                "property_type" => _property_type,
+                "property_features" => _property_features,
+                "spaces" => _spaces,
+                "status" => _status,
                 "subscriptions" => [],
-                "user_id" => user_id2
+                "user_id" => _user_id
               }} = Jason.decode(conn.resp_body)
     end
 
