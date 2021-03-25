@@ -34,6 +34,10 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     "photo" => "otra_photo"
   }
 
+  @update_invalid_attrs %{
+    "email" => "algun otro mail"
+  }
+
   describe "list all users" do
     test "return array empty", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
@@ -185,6 +189,18 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert %{
                "error" => %{"document" => ["is invalid"]}
              } = error
+    end
+
+    test "return errors when a field not could be modificated", %{conn: conn} do
+      user_id = create_user().id
+      @invalid_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+      assert 400 = conn.status
+      assert {:ok, error} = Jason.decode(conn.resp_body)
+
+      assert %{
+               "error" => %{"document" => ["is invalid"]}
+             } = error |> IO.inspect()
     end
   end
 

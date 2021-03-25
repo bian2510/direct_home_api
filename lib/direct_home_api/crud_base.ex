@@ -20,7 +20,7 @@ defmodule DirectHomeApi.CrudBase do
   end
 
   def update(model, struc, id, attrs, preloads) do
-    changeset = Repo.get!(model, id) |> model.changeset(attrs)
+    changeset = Repo.get!(model, id) |> model.changeset_update(attrs)
 
     case changeset.valid? do
       true -> Repo.update!(changeset) |> Repo.preload(preloads)

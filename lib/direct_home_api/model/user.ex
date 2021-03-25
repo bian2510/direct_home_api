@@ -56,4 +56,17 @@ defmodule DirectHomeApi.Model.User do
       |> validate_length(:password, min: 8)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
   end
+
+  def changeset_update(user, attrs) do
+    user
+    |> cast(attrs, [
+      :name,
+      :last_name,
+      :phone,
+      :photo,
+      :document,
+      :document_type,
+      :password
+    ])
+  end
 end
