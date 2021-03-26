@@ -10,6 +10,7 @@ defmodule DirectHomeApi.Errors.ErrorHandler do
             [value | _] -> value
             _ -> value
           end
+
         String.replace(acc, "%{#{key}}", to_string(value))
       end)
     end)

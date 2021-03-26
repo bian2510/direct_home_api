@@ -9,7 +9,11 @@ defmodule DirectHomeApiWeb.PropertyController do
   end
 
   def create(conn, %{"property" => property_params}) do
-    CrudBase.create(Property, %Property{}, property_params, [:address, :subscriptions, :property_features])
+    CrudBase.create(Property, %Property{}, property_params, [
+      :address,
+      :subscriptions,
+      :property_features
+    ])
     |> case do
       %Property{} = property -> json(conn, property)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})

@@ -4,7 +4,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   alias DirectHomeApi.Model.User
   alias DirectHomeApi.Repo
 
-  #Falta agregar validaciones de documento y sus tests
+  # Falta agregar validaciones de documento y sus tests
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -32,6 +32,10 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   @update_attrs %{
     "phone" => 1_123_423_422,
     "photo" => "otra_photo"
+  }
+
+  @update_invalid_attrs %{
+    "email" => "algun otro mail"
   }
 
   describe "list all users" do
@@ -134,7 +138,6 @@ defmodule DirectHomeApiWeb.UserControllerTest do
               }} = Jason.decode(conn.resp_body)
     end
 
-
     test "return errors when email exist", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
@@ -149,41 +152,63 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
   end
 
-  # describe "update user" do
-  #  test "return user when data is valid", %{conn: conn, user: %User{id: id} = user} do
-  #    id = post(conn, Routes.user_path(conn, :create, user), user: @create_attrs).resp_body |> Jason.decode!() |> get_in(["id"])
-  #    Repo.get!(User, id)
-  #    conn = put(conn, Routes.user_path(conn, :update, user), book: @update_attrs)
-  #    assert 200 = conn.status |> IO.inspect(label: "ESTATUUS")
-  #    assert {:ok, user} = Jason.decode(conn.resp_body)
-  #    map = %{
-  #      "id" => id,
-  #      "document" => 95_935_781,
-  #      "document_type" => "dni",
-  #      "email" => "bian251091@gmail.com",
-  #      "name" => "Carlos",
-  #      "last_name" => "Hernandez",
-  #      "phone" => 1123423422,
-  #      "photo" => "otra_photo",
-  #      "role_id" => nil
-  #    }
-  #
-  #    assert map == user
-  #  end
+  describe "update user" do
+    test "return user when data is valid", %{conn: conn} do
+      user_id = create_user().id
+      @update_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_attrs)
+      assert 200 = conn.status
+      assert {:ok, user} = Jason.decode(conn.resp_body)
 
-  # test "return errors when data is invalid", %{conn: conn} do
-  #  conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
-  #  assert 400 = conn.status
-  #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
-  # end
-  #
-  # test "return errors when email or document exist", %{conn: conn} do
-  #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-  #  conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-  #  assert 400 = conn.status
-  #  assert {:ok, %{"error" => "error"}} = Jason.decode(conn.resp_body)
-  # end
-  # end
+      _updated_phone = @update_attrs["phone"]
+      _updated_photo = @update_attrs["photo"]
+
+      assert %{
+               "id" => _user_id,
+               "document" => _document,
+               "document_type" => _document_type,
+               "email" => _email,
+               "name" => _name,
+               "last_name" => _last_name,
+               "phone" => _phone,
+               "photo" => _photo,
+               "type" => "client"
+             } = user
+
+      assert _updated_phone = user["phone"]
+      assert _updated_photo = user["photo"]
+    end
+
+    test "return errors when data is invalid", %{conn: conn} do
+      user_id = create_user().id
+      @invalid_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @invalid_attrs)
+      assert 400 = conn.status
+      assert {:ok, error} = Jason.decode(conn.resp_body)
+
+      assert %{
+               "error" => %{"document" => ["is invalid"]}
+             } = error
+    end
+
+    test "return the same user when a field not could be modificated", %{conn: conn} do
+      user = create_user()   
+      user_id = user.id
+      @invalid_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+      assert 200 = conn.status
+      assert {:ok, user_updated} = Jason.decode(conn.resp_body)
+      assert _user = user_updated
+    end
+  end
+
+  describe "delete user" do
+    test "return status 201 if a user could be deleted", %{conn: conn} do
+      id = create_user().id
+      conn = delete(conn, Routes.user_path(conn, :delete, id))
+      assert conn.status == 201
+    end
+  end
 
   def create_user() do
     Repo.insert!(%User{
