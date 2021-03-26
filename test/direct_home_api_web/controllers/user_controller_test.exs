@@ -47,33 +47,33 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return array with users", %{conn: conn} do
-      user1 = create_user()
-      user2 = create_user()
+      _user1 = create_user()
+      _user2 = create_user()
       conn = get(conn, Routes.user_path(conn, :index))
       assert 200 = conn.status
 
       assert {:ok,
               [
                 %{
-                  "document" => document1,
-                  "document_type" => document_type1,
-                  "email" => email1,
-                  "name" => name1,
-                  "last_name" => last_name1,
-                  "phone" => phone1,
-                  "photo" => photo1,
-                  "type" => type1,
+                  "document" => _document1,
+                  "document_type" => _document_type1,
+                  "email" => _email1,
+                  "name" => _name1,
+                  "last_name" => _last_name1,
+                  "phone" => _phone1,
+                  "photo" => _photo1,
+                  "type" => _type1,
                   "properties" => []
                 },
                 %{
-                  "document" => document2,
-                  "document_type" => document_type2,
-                  "email" => email2,
-                  "name" => name2,
-                  "last_name" => last_name2,
-                  "phone" => phone2,
-                  "photo" => photo2,
-                  "type" => type2,
+                  "document" => _document2,
+                  "document_type" => _document_type2,
+                  "email" => _email2,
+                  "name" => _name2,
+                  "last_name" => _last_name2,
+                  "phone" => _phone2,
+                  "photo" => _photo2,
+                  "type" => _type2,
                   "properties" => []
                 }
               ]} = Jason.decode(conn.resp_body)
@@ -87,14 +87,14 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert 200 = conn.status
 
       assert %{
-               "document" => document2,
-               "document_type" => document_type2,
-               "email" => email2,
-               "name" => name2,
-               "last_name" => last_name2,
-               "phone" => phone2,
-               "photo" => photo2,
-               "type" => type2,
+               "document" => _document2,
+               "document_type" => _document_type2,
+               "email" => _email2,
+               "name" => _name2,
+               "last_name" => _last_name2,
+               "phone" => _phone2,
+               "photo" => _photo2,
+               "type" => _type2,
                "properties" => []
              } = Jason.decode!(conn.resp_body)
     end

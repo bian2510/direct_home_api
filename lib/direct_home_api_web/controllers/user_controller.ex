@@ -21,7 +21,7 @@ defmodule DirectHomeApiWeb.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    CrudBase.update(User, %User{}, id, user_params, [:properties])
+    CrudBase.update(User, id, user_params, [:properties])
     |> case do
       %User{} = user -> json(conn, user)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
