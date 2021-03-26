@@ -29,10 +29,10 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     "photo" => nil
   }
 
-  #@update_attrs %{
-  #  "phone" => 1_123_423_422,
-  #  "photo" => "otra_photo"
-  #}
+  @update_attrs %{
+    "phone" => 1_123_423_422,
+    "photo" => "otra_photo"
+  }
 
   @update_invalid_attrs %{
     "email" => "algun otro mail"
