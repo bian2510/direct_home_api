@@ -191,16 +191,28 @@ defmodule DirectHomeApiWeb.UserControllerTest do
              } = error
     end
 
-    test "return errors when a field not could be modificated", %{conn: conn} do
-      user_id = create_user().id
+    test "return the same user when a field not could be modificated", %{conn: conn} do
+      user = create_user()   
+      user_id = user.id
       @invalid_attrs |> put_in(["id"], user_id)
       conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
-      assert 400 = conn.status
-      assert {:ok, error} = Jason.decode(conn.resp_body)
+      assert 200 = conn.status
+      assert {:ok, user_updated} = Jason.decode(conn.resp_body)
+      assert user = user_updated
+    end
+  end
 
-      assert %{
-               "error" => %{"document" => ["is invalid"]}
-             } = error |> IO.inspect()
+  describe "delete user" do
+    test "return status 201 if a user could be deleted", %{conn: conn} do
+      id = create_user().id
+      conn = delete(conn, Routes.user_path(conn, :delete, id))
+      conn.status == 201
+    end
+
+    test "return status 400 if a not exist the user to be deleted", %{conn: conn} do
+      id = create_user().id
+      conn = delete(conn, Routes.user_path(conn, :delete, id))
+      conn.status == 400
     end
   end
 
