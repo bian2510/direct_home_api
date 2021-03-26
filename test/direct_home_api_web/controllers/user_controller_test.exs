@@ -198,7 +198,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
       assert 200 = conn.status
       assert {:ok, user_updated} = Jason.decode(conn.resp_body)
-      assert user = user_updated
+      assert _user = user_updated
     end
   end
 
@@ -206,13 +206,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     test "return status 201 if a user could be deleted", %{conn: conn} do
       id = create_user().id
       conn = delete(conn, Routes.user_path(conn, :delete, id))
-      conn.status == 201
-    end
-
-    test "return status 400 if a not exist the user to be deleted", %{conn: conn} do
-      id = create_user().id
-      conn = delete(conn, Routes.user_path(conn, :delete, id))
-      conn.status == 400
+      assert conn.status == 201
     end
   end
 
