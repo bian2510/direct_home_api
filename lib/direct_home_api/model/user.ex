@@ -24,7 +24,7 @@ defmodule DirectHomeApi.Model.User do
   end
 
   @doc false
-  #Falta agregar validaciones de documento y sus tests
+  # Falta agregar validaciones de documento y sus tests
   def changeset(user, attrs) do
     user
     |> cast(attrs, [
@@ -55,5 +55,18 @@ defmodule DirectHomeApi.Model.User do
       |> unsafe_validate_unique([:email], Repo)
       |> validate_length(:password, min: 8)
       |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
+  end
+
+  def changeset_update(user, attrs) do
+    user
+    |> cast(attrs, [
+      :name,
+      :last_name,
+      :phone,
+      :photo,
+      :document,
+      :document_type,
+      :password
+    ])
   end
 end
