@@ -40,4 +40,9 @@ defmodule DirectHomeApi.Model.Property do
   def changeset_create(property, attrs) do
     changeset = changeset(property, attrs)
   end
+
+  def changeset_update(property, attrs) do
+    property
+    |> cast(attrs, [:description, :price, :currency, :spaces, :property_type])
+  end
 end

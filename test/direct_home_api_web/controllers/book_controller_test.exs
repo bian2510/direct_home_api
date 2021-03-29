@@ -1,12 +1,12 @@
 defmodule DirectHomeApiWeb.BookControllerTest do
-  #use DirectHomeApiWeb.ConnCase
+  # use DirectHomeApiWeb.ConnCase
 
-  #alias DirectHomeApi.Store
-  #alias DirectHomeApi.Store.Book
+  # alias DirectHomeApi.Store
+  # alias DirectHomeApi.Store.Book
 
-  #@create_attrs %{}
-  #@update_attrs %{}
-  #@invalid_attrs %{}
+  # @create_attrs %{}
+  # @update_attrs %{}
+  # @invalid_attrs %{}
 
   # def fixture(:book) do
   #  {:ok, book} = Store.create_book(@create_attrs)

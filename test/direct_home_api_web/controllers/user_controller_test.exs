@@ -160,8 +160,8 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert 200 = conn.status
       assert {:ok, user} = Jason.decode(conn.resp_body)
 
-      _updated_phone = @update_attrs["phone"]
-      _updated_photo = @update_attrs["photo"]
+      updated_phone = @update_attrs["phone"]
+      updated_photo = @update_attrs["photo"]
 
       assert %{
                "id" => _user_id,
@@ -175,8 +175,8 @@ defmodule DirectHomeApiWeb.UserControllerTest do
                "type" => "client"
              } = user
 
-      assert _updated_phone = user["phone"]
-      assert _updated_photo = user["photo"]
+      assert updated_phone == user["phone"]
+      assert updated_photo == user["photo"]
     end
 
     test "return errors when data is invalid", %{conn: conn} do
@@ -192,13 +192,27 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return the same user when a field not could be modificated", %{conn: conn} do
-      user = create_user()   
+      user = create_user()
       user_id = user.id
-      @invalid_attrs |> put_in(["id"], user_id)
+      user_email = user.email
+      @update_invalid_attrs |> put_in(["id"], user_id)
       conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
       assert 200 = conn.status
-      assert {:ok, user_updated} = Jason.decode(conn.resp_body)
-      assert _user = user_updated
+      assert {:ok, response} = Jason.decode(conn.resp_body)
+
+      assert user_email == response["email"]
+
+      assert %{
+               "id" => _user_id,
+               "document" => _document,
+               "document_type" => _document_type,
+               "email" => _user_email,
+               "name" => _name,
+               "last_name" => _last_name,
+               "phone" => _phone,
+               "photo" => _photo,
+               "type" => "client"
+             } = response
     end
   end
 
@@ -222,6 +236,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       password: "password",
       type: :client
     })
+    |> Repo.preload([:properties])
   end
 
   defp random_num, do: Enum.random(100_000_000..999_999_999)
