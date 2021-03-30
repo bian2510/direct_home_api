@@ -27,4 +27,9 @@ defmodule DirectHomeApiWeb.PropertyController do
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
   end
+
+  def delete(conn, %{"id" => id}) do
+    CrudBase.delete(Property, id)
+    conn |> put_status(201) |> json(%{})
+  end
 end

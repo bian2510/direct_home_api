@@ -32,6 +32,10 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
     "user_id" => nil
   }
 
+  @update_invalid_attr %{
+    "user_id" => 4
+  }
+
   describe "list all properties" do
     test "return an empty array without properties", %{conn: conn} do
       conn = get(conn, Routes.property_path(conn, :index))
@@ -155,19 +159,26 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
                Jason.decode(conn.resp_body)
     end
 
-    test  do
-      
+    test "return the same property when a field not could be modificated", %{conn: conn} do
+      property = create_property()
+      _user_id = property.user_id
+
+      conn =
+        put(conn, Routes.property_path(conn, :update, property.id), property: @update_invalid_attr)
+
+      assert 200 = conn.status
+      assert {:ok, _response} = Jason.decode(conn.resp_body)
+      assert _user_id = Jason.decode!(conn.resp_body) |> get_in(["user_id"])
     end
-    #
-    #    test "return the same user when a field not could be modificated", %{conn: conn} do
-    #      user = create_user()   
-    #      user_id = user.id
-    #      @invalid_attrs |> put_in(["id"], user_id)
-    #      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
-    #      assert 200 = conn.status
-    #      assert {:ok, user_updated} = Jason.decode(conn.resp_body)
-    #      assert _user = user_updated
-    #    end
+  end
+
+  describe "delete property" do
+    test "when the property exist", %{conn: conn} do
+      property = create_property()
+      conn = delete(conn, Routes.property_path(conn, :delete, property.id))
+
+      assert 201 = conn.status
+    end
   end
 
   def create_property() do
