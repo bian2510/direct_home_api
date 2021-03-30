@@ -19,4 +19,17 @@ defmodule DirectHomeApiWeb.PropertyController do
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
   end
+
+  def update(conn, %{"id" => id, "property" => property_params}) do
+    CrudBase.update(Property, id, property_params, [:address, :subscriptions, :property_features])
+    |> case do
+      %Property{} = property -> json(conn, property)
+      {:error, error} -> conn |> put_status(400) |> json(%{error: error})
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    CrudBase.delete(Property, id)
+    conn |> put_status(201) |> json(%{})
+  end
 end
