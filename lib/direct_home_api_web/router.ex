@@ -14,7 +14,7 @@ defmodule DirectHomeApiWeb.Router do
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
     resources "/properties", PropertyController, except: [:create, :edit, :delete]
-    resources "/users", UserController, except: [:edit, :delete, :index, :edit]
+    resources "/users", UserController, except: [:edit, :delete, :index]
     get "/health_check", HealthController, :health_check
   end
 
