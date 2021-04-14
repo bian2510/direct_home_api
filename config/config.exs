@@ -25,6 +25,10 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :direct_home_api, DirectHomeApiWeb.Auth.Guardian,
+  issuer: "direct_home_api",
+  secret_key: "iBQhSf/0w2xA+wylJuIuddBymzkDHc1XBAcrykcz8dI7ACM4nx0v/k/f1Cn+5I4I"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
