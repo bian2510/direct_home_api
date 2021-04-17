@@ -44,7 +44,9 @@ defmodule DirectHomeApiWeb.UserController do
         |> json(%{user: user})
 
       {:error, error} ->
-        json(conn, %{"error" => error}) |> IO.inspect()
+        conn
+        |> put_status(401)
+        |> json(%{"error" => error})
     end
   end
 

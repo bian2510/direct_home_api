@@ -255,6 +255,38 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
   end
 
+  describe "signin user" do
+    test "return the user and authorization token when the password and email are valid", %{
+      conn: conn
+    } do
+      user = create_user()
+      email = user.email
+
+      conn =
+        post(conn, Routes.user_path(conn, :signin), %{
+          "email" => email,
+          "password" => "password"
+        })
+
+      assert conn.status == 201
+      {:ok, user} = User.get_by_email(email)
+      assert user.id == Jason.decode!(conn.resp_body) |> get_in(["user", "id"])
+    end
+
+    test "return 401 and error map when the password or email are invalid", %{conn: conn} do
+      user = create_user()
+
+      conn =
+        post(conn, Routes.user_path(conn, :signin), %{
+          "email" => "everything",
+          "password" => "everypass"
+        })
+
+      assert conn.status == 401
+      assert {:ok, %{"error" => "not_found"}} = Jason.decode(conn.resp_body)
+    end
+  end
+
   def create_user() do
     Repo.insert!(%User{
       name: "Fabian",
