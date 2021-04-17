@@ -246,11 +246,14 @@ defmodule DirectHomeApiWeb.UserControllerTest do
 
   def sigin_and_put_token(conn, user) do
     token =
-        post(conn, Routes.user_path(conn, :signin),
-          %{"email" => user.email, "password" => "password"}
-        ).resp_headers
-      |> Enum.find(fn header -> elem(header, 0) == "authorization" end) |> elem(1)
-      conn = conn |> put_req_header("authorization", "Bearer " <> token)
+      post(conn, Routes.user_path(conn, :signin), %{
+        "email" => user.email,
+        "password" => "password"
+      }).resp_headers
+      |> Enum.find(fn header -> elem(header, 0) == "authorization" end)
+      |> elem(1)
+
+    conn = conn |> put_req_header("authorization", "Bearer " <> token)
   end
 
   defp random_num, do: Enum.random(100_000_000..999_999_999)
