@@ -39,23 +39,13 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   }
 
   describe "list all users" do
-    @tag :skip
-    test "return array empty if not have users and the user logged has type = admin", %{
+    test "return array with users if exist users and the users is logged", %{
       conn: conn
     } do
-      conn = get(conn, Routes.user_path(conn, :index))
-      assert 200 = conn.status
-      assert {:ok, array} = Jason.decode(conn.resp_body)
-      assert [] = array
-    end
-
-    @tag :skip
-    test "return array with users if exist users and the user logged has type = admin", %{
-      conn: conn
-    } do
-      _user1 = create_user()
+      user1 = create_user()
       _user2 = create_user()
-      conn = get(conn, Routes.user_path(conn, :index))
+
+      conn = sigin_and_put_token(conn, user1) |> get(Routes.user_path(conn, :index))
       assert 200 = conn.status
 
       assert {:ok,
@@ -85,13 +75,13 @@ defmodule DirectHomeApiWeb.UserControllerTest do
               ]} = Jason.decode(conn.resp_body)
     end
 
-    test "return 401 unauthorized if the user is not logged or if the user logged is a client" do
-      user1 = create_user()
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert conn.status == 401
     end
   end
 
   describe "show user" do
-    @tag :skip
     test "return a specific user", %{conn: conn} do
       id = create_user().id
       conn = get(conn, Routes.user_path(conn, :show, id))
@@ -133,7 +123,6 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert map == user
     end
 
-    @tag :skip
     test "return errors when data is invalid or is missing required params", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert 400 = conn.status
@@ -150,7 +139,6 @@ defmodule DirectHomeApiWeb.UserControllerTest do
               }} = Jason.decode(conn.resp_body)
     end
 
-    @tag :skip
     test "return errors when email exist", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
@@ -250,10 +238,19 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       photo: "unaphoto",
       document: random_num(),
       document_type: "DNI",
-      password: "password",
+      password: Bcrypt.hash_pwd_salt("password"),
       type: :client
     })
     |> Repo.preload([:properties])
+  end
+
+  def sigin_and_put_token(conn, user) do
+    token =
+        post(conn, Routes.user_path(conn, :signin),
+          %{"email" => user.email, "password" => "password"}
+        ).resp_headers
+      |> Enum.find(fn header -> elem(header, 0) == "authorization" end) |> elem(1)
+      conn = conn |> put_req_header("authorization", "Bearer " <> token)
   end
 
   defp random_num, do: Enum.random(100_000_000..999_999_999)

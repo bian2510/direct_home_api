@@ -3,10 +3,13 @@ defmodule DirectHomeApiWeb.UserController do
 
   alias DirectHomeApi.Model.User
   alias DirectHomeApi.CrudBase
-  alias DirectHomeApiWeb.Auth.Guardian
+  alias DirectHomeApiWeb.Auth.{AuthorizationFunction, Guardian} 
 
   def index(conn, _params) do
-    json(conn, CrudBase.all(User, [:properties]))
+    token = AuthorizationFunction.get_token_from_request(conn)
+    conn
+    |> put_resp_header("authorization", token)
+    |> json(CrudBase.all(User, [:properties]))
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -35,11 +38,14 @@ defmodule DirectHomeApiWeb.UserController do
   end
 
   def signin(conn, %{"email" => email, "password" => password}) do
-    with {:ok, user, token} <- Guardian.authenticate(email, password) do
-      conn
-      |> put_status(:created)
-      |> put_req_header("token", token)
-      |> json(%{user: user})
+    case Guardian.authenticate(email, password) do
+      {:ok, user, token} ->
+        conn
+        |> put_status(:created)
+        |> put_resp_header("authorization", token)
+        |> json(%{user: user})
+      {:error, error} ->
+        json(conn, %{"error" => error}) |> IO.inspect()
     end
   end
 
@@ -48,7 +54,7 @@ defmodule DirectHomeApiWeb.UserController do
 
     conn
     |> put_status(:created)
-    |> put_resp_header("token", token)
+    |> put_resp_header("authorization", token)
 
     json(conn, %{user: user})
   end

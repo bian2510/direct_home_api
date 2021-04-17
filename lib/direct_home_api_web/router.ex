@@ -13,15 +13,15 @@ defmodule DirectHomeApiWeb.Router do
     pipe_through [:api]
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
-    resources "/properties", PropertyController, except: [:create, :edit, :delete]
-    resources "/users", UserController, except: [:edit, :delete, :index]
+    resources "/properties", PropertyController, only: [:index, :show]
+    resources "/users", UserController, only: [:show]
     get "/health_check", HealthController, :health_check
   end
 
   scope "/api", DirectHomeApiWeb do
     pipe_through [:api, :auth]
-    resources "/users", UserController, except: [:create, :show]
-    resources "/properties", PropertyController, except: [:index, :show]
+    resources "/users", UserController, only: [:edit, :delete, :index, :show]
+    resources "/properties", PropertyController, except: [:new]
   end
 
   # Enables LiveDashboard only for development

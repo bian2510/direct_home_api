@@ -16,9 +16,7 @@ defmodule DirectHomeApiWeb.Auth.Guardian do
 
   def authenticate(email, password) do
     with {:ok, user} <- User.get_by_email(email) do
-      IO.inspect(user)
-
-      case validate_password(password, user.encrypted_password) do
+      case validate_password(password, user.password) do
         true ->
           create_token(user)
 
@@ -29,7 +27,7 @@ defmodule DirectHomeApiWeb.Auth.Guardian do
   end
 
   defp validate_password(password, encrypted_password) do
-    Bcrypt.verify_pass(password, encrypted_password) |> IO.inspect(label: "VERIFY PASS")
+    Bcrypt.verify_pass(password, encrypted_password)
   end
 
   def create_token(user) do

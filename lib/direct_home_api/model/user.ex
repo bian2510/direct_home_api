@@ -71,7 +71,9 @@ defmodule DirectHomeApi.Model.User do
   end
 
   def get_by_email(email) do
-    case Repo.get_by(User, email: email) do
+    Repo.get_by(User, email: email)
+    |> Repo.preload(:properties)
+    |> case do
       nil ->
         {:error, :not_found}
 
