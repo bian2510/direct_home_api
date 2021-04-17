@@ -6,10 +6,7 @@ defmodule DirectHomeApiWeb.UserController do
   alias DirectHomeApiWeb.Auth.{AuthorizationFunction, Guardian}
 
   def index(conn, _params) do
-    token = AuthorizationFunction.get_token_from_request(conn)
-
     conn
-    |> put_resp_header("authorization", token)
     |> json(CrudBase.all(User, [:properties]))
   end
 
