@@ -154,11 +154,15 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   end
 
   describe "update user" do
-    @tag :skip
-    test "return user when data is valid", %{conn: conn} do
-      user_id = create_user().id
+    test "return user when data is valid and the user is logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
       @update_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @update_attrs)
+
       assert 200 = conn.status
       assert {:ok, user} = Jason.decode(conn.resp_body)
 
@@ -181,11 +185,15 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       assert updated_photo == user["photo"]
     end
 
-    @tag :skip
     test "return errors when data is invalid", %{conn: conn} do
-      user_id = create_user().id
+      user = create_user()
+      user_id = user.id
       @invalid_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @invalid_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @invalid_attrs)
+
       assert 400 = conn.status
       assert {:ok, error} = Jason.decode(conn.resp_body)
 
@@ -194,13 +202,16 @@ defmodule DirectHomeApiWeb.UserControllerTest do
              } = error
     end
 
-    @tag :skip
     test "return the same user when a field not could be modificated", %{conn: conn} do
       user = create_user()
       user_id = user.id
       user_email = user.email
       @update_invalid_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+
       assert 200 = conn.status
       assert {:ok, response} = Jason.decode(conn.resp_body)
 
@@ -218,14 +229,29 @@ defmodule DirectHomeApiWeb.UserControllerTest do
                "type" => "client"
              } = response
     end
+
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
+      @update_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+      assert conn.status == 401
+    end
   end
 
   describe "delete user" do
-    @tag :skip
     test "return status 201 if a user could be deleted", %{conn: conn} do
-      id = create_user().id
-      conn = delete(conn, Routes.user_path(conn, :delete, id))
+      user = create_user()
+      user_id = user.id
+      conn = sigin_and_put_token(conn, user) |> delete(Routes.user_path(conn, :delete, user_id))
       assert conn.status == 201
+    end
+
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
+      conn = delete(conn, Routes.user_path(conn, :delete, user_id))
+      assert conn.status == 401
     end
   end
 

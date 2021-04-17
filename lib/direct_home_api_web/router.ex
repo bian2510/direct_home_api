@@ -20,7 +20,7 @@ defmodule DirectHomeApiWeb.Router do
 
   scope "/api", DirectHomeApiWeb do
     pipe_through [:api, :auth]
-    resources "/users", UserController, only: [:edit, :delete, :index, :show]
+    resources "/users", UserController, only: [:update, :delete, :index, :show]
     resources "/properties", PropertyController, except: [:new]
   end
 
