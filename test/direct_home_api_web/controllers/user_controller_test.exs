@@ -274,7 +274,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return 401 and error map when the password or email are invalid", %{conn: conn} do
-      user = create_user()
+      create_user()
 
       conn =
         post(conn, Routes.user_path(conn, :signin), %{
@@ -311,7 +311,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       |> Enum.find(fn header -> elem(header, 0) == "authorization" end)
       |> elem(1)
 
-    conn = conn |> put_req_header("authorization", "Bearer " <> token)
+    conn |> put_req_header("authorization", "Bearer " <> token)
   end
 
   defp random_num, do: Enum.random(100_000_000..999_999_999)
