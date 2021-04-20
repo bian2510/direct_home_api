@@ -6,8 +6,7 @@ defmodule DirectHomeApiWeb.UserController do
   alias DirectHomeApiWeb.Auth.{AuthorizationFunction, Guardian}
 
   def index(conn, _params) do
-    conn
-    |> json(CrudBase.all(User, [:properties]))
+    json(conn, CrudBase.all(User, [:properties]))
   end
 
   def create(conn, %{"user" => user_params}) do
