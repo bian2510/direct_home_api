@@ -39,17 +39,13 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   }
 
   describe "list all users" do
-    test "return array empty", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :index))
-      assert 200 = conn.status
-      assert {:ok, array} = Jason.decode(conn.resp_body)
-      assert [] = array
-    end
-
-    test "return array with users", %{conn: conn} do
-      _user1 = create_user()
+    test "return array with users if exist users and the users is logged", %{
+      conn: conn
+    } do
+      user1 = create_user()
       _user2 = create_user()
-      conn = get(conn, Routes.user_path(conn, :index))
+
+      conn = sigin_and_put_token(conn, user1) |> get(Routes.user_path(conn, :index))
       assert 200 = conn.status
 
       assert {:ok,
@@ -78,6 +74,11 @@ defmodule DirectHomeApiWeb.UserControllerTest do
                 }
               ]} = Jason.decode(conn.resp_body)
     end
+
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert conn.status == 401
+    end
   end
 
   describe "show user" do
@@ -104,7 +105,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     test "return user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
       assert 200 = conn.status
-      assert {:ok, user} = Jason.decode(conn.resp_body)
+      assert {:ok, %{"user" => user}} = Jason.decode(conn.resp_body)
 
       map = %{
         "id" => user["id"],
@@ -153,10 +154,15 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   end
 
   describe "update user" do
-    test "return user when data is valid", %{conn: conn} do
-      user_id = create_user().id
+    test "return user when data is valid and the user is logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
       @update_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @update_attrs)
+
       assert 200 = conn.status
       assert {:ok, user} = Jason.decode(conn.resp_body)
 
@@ -180,9 +186,14 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
 
     test "return errors when data is invalid", %{conn: conn} do
-      user_id = create_user().id
+      user = create_user()
+      user_id = user.id
       @invalid_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @invalid_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @invalid_attrs)
+
       assert 400 = conn.status
       assert {:ok, error} = Jason.decode(conn.resp_body)
 
@@ -196,7 +207,11 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       user_id = user.id
       user_email = user.email
       @update_invalid_attrs |> put_in(["id"], user_id)
-      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> put(Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+
       assert 200 = conn.status
       assert {:ok, response} = Jason.decode(conn.resp_body)
 
@@ -214,13 +229,61 @@ defmodule DirectHomeApiWeb.UserControllerTest do
                "type" => "client"
              } = response
     end
+
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
+      @update_attrs |> put_in(["id"], user_id)
+      conn = put(conn, Routes.user_path(conn, :update, user_id), user: @update_invalid_attrs)
+      assert conn.status == 401
+    end
   end
 
   describe "delete user" do
     test "return status 201 if a user could be deleted", %{conn: conn} do
-      id = create_user().id
-      conn = delete(conn, Routes.user_path(conn, :delete, id))
+      user = create_user()
+      user_id = user.id
+      conn = sigin_and_put_token(conn, user) |> delete(Routes.user_path(conn, :delete, user_id))
       assert conn.status == 201
+    end
+
+    test "return 401 unauthorized if the user is not logged", %{conn: conn} do
+      user = create_user()
+      user_id = user.id
+      conn = delete(conn, Routes.user_path(conn, :delete, user_id))
+      assert conn.status == 401
+    end
+  end
+
+  describe "signin user" do
+    test "return the user and authorization token when the password and email are valid", %{
+      conn: conn
+    } do
+      user = create_user()
+      email = user.email
+
+      conn =
+        post(conn, Routes.user_path(conn, :signin), %{
+          "email" => email,
+          "password" => "password"
+        })
+
+      assert conn.status == 201
+      {:ok, user} = User.get_by_email(email)
+      assert user.id == Jason.decode!(conn.resp_body) |> get_in(["user", "id"])
+    end
+
+    test "return 401 and error map when the password or email are invalid", %{conn: conn} do
+      create_user()
+
+      conn =
+        post(conn, Routes.user_path(conn, :signin), %{
+          "email" => "everything",
+          "password" => "everypass"
+        })
+
+      assert conn.status == 401
+      assert {:ok, %{"error" => "not_found"}} = Jason.decode(conn.resp_body)
     end
   end
 
@@ -233,10 +296,22 @@ defmodule DirectHomeApiWeb.UserControllerTest do
       photo: "unaphoto",
       document: random_num(),
       document_type: "DNI",
-      password: "password",
+      password: Bcrypt.hash_pwd_salt("password"),
       type: :client
     })
     |> Repo.preload([:properties])
+  end
+
+  def sigin_and_put_token(conn, user) do
+    token =
+      post(conn, Routes.user_path(conn, :signin), %{
+        "email" => user.email,
+        "password" => "password"
+      }).resp_headers
+      |> Enum.find(fn header -> elem(header, 0) == "authorization" end)
+      |> elem(1)
+
+    conn |> put_req_header("authorization", "Bearer " <> token)
   end
 
   defp random_num, do: Enum.random(100_000_000..999_999_999)
