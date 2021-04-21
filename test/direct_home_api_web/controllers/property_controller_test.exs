@@ -192,7 +192,6 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
       status: true,
       property_type: "department",
       user_id: user_id
-    }) |> IO.inspect()
-
+    })
   end
 end

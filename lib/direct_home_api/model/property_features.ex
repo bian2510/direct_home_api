@@ -4,7 +4,7 @@ defmodule DirectHomeApi.Model.PropertyFeatures do
 
   alias DirectHomeApi.Model.Property
 
-  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property_id]}
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property]}
 
   schema "property_features" do
     field :bathrooms, :integer

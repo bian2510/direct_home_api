@@ -5,7 +5,7 @@ defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
   alias DirectHomeApi.Repo
   alias DirectHomeApiWeb.PropertyControllerTest
 
-  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property_id]}
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at]}
 
   describe "list all property features" do
     test "return an empty array without features", %{conn: conn} do
