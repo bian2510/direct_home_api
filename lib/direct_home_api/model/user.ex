@@ -4,7 +4,7 @@ defmodule DirectHomeApi.Model.User do
 
   alias DirectHomeApi.Errors.ErrorHandler
   alias DirectHomeApi.Repo
-  alias DirectHomeApi.Model.Property
+  alias DirectHomeApi.Model.{User, Property}
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -68,5 +68,21 @@ defmodule DirectHomeApi.Model.User do
       :document_type,
       :password
     ])
+  end
+
+  def get_by_email(email) do
+    Repo.get_by(User, email: email)
+    |> Repo.preload(:properties)
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        {:ok, user}
+    end
+  end
+
+  def get_user(id) do
+    Repo.get!(User, id)
   end
 end
