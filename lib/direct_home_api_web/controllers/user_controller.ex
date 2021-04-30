@@ -50,18 +50,7 @@ defmodule DirectHomeApiWeb.UserController do
   end
 
   def logout(conn, _) do
-    jwt = Guardian.Plug.current_token(conn) |> IO.inspect()
-    Guardian.revoke(conn, jwt)
-    #token = Guardian.Plug.current_token(conn) |> IO.inspect()
-    #token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJkaXJlY3RfaG9tZV9hcGkiLCJleHAiOjE2MjE3MjA1OTYsImlhdCI6MTYxOTMwMTM5NiwiaXNzIjoiZGlyZWN0X2hvbWVfYXBpIiwianRpIjoiODA3ZjZmN2QtYmRkYS00MDlmLWJmMTAtNzNmZmU4OWE2YjJkIiwibmJmIjoxNjE5MzAxMzk1LCJzdWIiOiIyNCIsInR5cCI6ImFjY2VzcyJ9.1DBYP2xRmRPw3B4ZfXug1DRj5jsXGYDuPMo0QSd4Ca3JVWRf5OFxAGcv9LQoLMa1gNCwahKnG_ZLaJgnt9UpHg"#Guardian.Plug.current_token(conn) #|> IO.inspect()
-    #{:ok, claims} = Guardian.revoke(token) |> IO.inspect()
-    #Guardian.Plug.sign_out(conn) #|> IO.inspect()
     json(conn, %{})
-    #Guardian.Plug.current_token(conn) |> IO.inspect()
-    #conn 
-    #|> Guardian.revoke
-    #|> put_status(:ok)
-    #|> json(%{})
   end
 
   defp return_user_created(conn, user) do
