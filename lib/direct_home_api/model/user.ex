@@ -2,7 +2,6 @@ defmodule DirectHomeApi.Model.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Errors.ErrorHandler
   alias DirectHomeApi.Repo
   alias DirectHomeApi.Model.{User, Property}
 

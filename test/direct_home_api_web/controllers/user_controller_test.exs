@@ -287,6 +287,14 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
   end
 
+  describe "logout user" do
+    test "logout user", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :logout))
+      assert %{} = Jason.decode!(conn.resp_body)
+      assert 200 = conn.status
+    end
+  end
+
   def create_user() do
     Repo.insert!(%User{
       name: "Fabian",
