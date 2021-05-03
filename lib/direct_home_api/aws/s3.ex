@@ -1,5 +1,5 @@
 defmodule DirectHomeApi.Aws.S3 do
-  @callback upload_files(arg :: any) :: {:ok, string()} | {:ok, string()}
+  @callback upload_files(arg :: any) :: {:ok, map()} | {:ok, map()}
 
   def upload_files(image) do
     content_type = image.content_type
