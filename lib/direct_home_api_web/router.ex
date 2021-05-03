@@ -13,6 +13,7 @@ defmodule DirectHomeApiWeb.Router do
     pipe_through [:api]
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
+    get "/users/logout", UserController, :logout
     resources "/properties", PropertyController, only: [:index, :show]
     resources "/users", UserController, only: [:show]
     get "/health_check", HealthController, :health_check
