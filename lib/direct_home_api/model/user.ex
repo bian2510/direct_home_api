@@ -4,6 +4,8 @@ defmodule DirectHomeApi.Model.User do
 
   alias DirectHomeApi.Repo
   alias DirectHomeApi.Model.{User, Property}
+  alias DirectHomeApi.Aws.S3
+  alias DirectHomeApi.Errors.ErrorHandler
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -67,6 +69,25 @@ defmodule DirectHomeApi.Model.User do
       :document_type,
       :password
     ])
+  end
+
+  def update_image(id, user_image) do
+    S3.upload_files(user_image["photo"])
+    |> case do
+      {:ok, filename} ->
+        changeset = Repo.get!(User, id) |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+        case changeset.valid? do
+          true ->
+            Repo.update!(changeset)
+            {:ok, %{"sucess" => "The image could be saved sucessfully"}}
+
+          false ->
+            {:error, ErrorHandler.changeset_error_to_map(changeset)}
+        end
+
+      {:error, _} ->
+        {:error, %{"error" => "The image not could be storage in s3"}}
+    end
   end
 
   def get_by_email(email) do

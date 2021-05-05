@@ -22,6 +22,7 @@ defmodule DirectHomeApiWeb.Router do
   scope "/api", DirectHomeApiWeb do
     pipe_through [:api, :auth]
     resources "/users", UserController, only: [:update, :delete, :index, :show]
+    post "/users/upload_image", UserController, :upload_image
     resources "/properties", PropertyController, except: [:new]
   end
 

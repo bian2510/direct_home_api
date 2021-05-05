@@ -45,12 +45,20 @@ defmodule DirectHomeApiWeb.UserController do
       {:error, error} ->
         conn
         |> put_status(401)
-        |> json(%{"error" => error})
+        |> json(%{error: error})
     end
   end
 
   def logout(conn, _) do
     json(conn, %{})
+  end
+
+  def upload_image(conn, %{"id" => id, "photo" => user_image}) do
+    response = User.update_image(id, %{"photo" => user_image})
+    case response do
+      {:ok, body} -> json(conn, %{response: body})
+      {:error, body} -> json(conn, %{error: body})
+    end
   end
 
   defp return_user_created(conn, user) do

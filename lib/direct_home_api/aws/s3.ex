@@ -3,7 +3,8 @@ defmodule DirectHomeApi.Aws.S3 do
 
   def upload_files(image) do
     content_type = image.content_type
-    file_name = image.filename
+    format_file = String.split(content_type, "/") |> List.last()
+    file_name = "#{Ecto.UUID.generate()}.#{format_file}"
     file_path = image.path
     bucket = System.get_env("BUCKET_NAME")
 
@@ -11,5 +12,9 @@ defmodule DirectHomeApi.Aws.S3 do
       {:content_type, content_type}
     ])
     |> ExAws.request()
+    |> case  do
+      {:ok, _} -> {:ok, file_name}
+      {:error, error} -> {:error, error}        
+    end
   end
 end
