@@ -1,4 +1,5 @@
 defmodule DirectHomeApiWeb.UserController do
+  @callback upload_files(arg :: any) :: {:ok, map()} | {:ok, map()}
   use DirectHomeApiWeb, :controller
 
   alias DirectHomeApi.Model.User
@@ -51,6 +52,15 @@ defmodule DirectHomeApiWeb.UserController do
 
   def logout(conn, _) do
     json(conn, %{})
+  end
+
+  def upload_image(conn, %{"id" => id, "photo" => user_image}) do
+    response = User.update_image(id, %{"photo" => user_image})
+
+    case response do
+      {:ok, body} -> json(conn, body)
+      {:error, body} -> json(conn, body)
+    end
   end
 
   defp return_user_created(conn, user) do

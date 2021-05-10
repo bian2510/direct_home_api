@@ -11,5 +11,9 @@ defmodule DirectHomeApi.Aws.S3 do
       {:content_type, content_type}
     ])
     |> ExAws.request()
+    |> case do
+      {:ok, _} -> {:ok, file_name}
+      {:error, error} -> {:error, error}
+    end
   end
 end
