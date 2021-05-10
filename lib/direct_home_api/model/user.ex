@@ -4,7 +4,6 @@ defmodule DirectHomeApi.Model.User do
 
   alias DirectHomeApi.Repo
   alias DirectHomeApi.Model.{User, Property}
-  alias DirectHomeApi.Aws.S3
   alias DirectHomeApi.Errors.ErrorHandler
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
@@ -72,10 +71,13 @@ defmodule DirectHomeApi.Model.User do
   end
 
   def update_image(id, user_image) do
-    S3.upload_files(user_image["photo"])
+    s3_provider().upload_files(user_image["photo"])
     |> case do
       {:ok, filename} ->
-        changeset = Repo.get!(User, id) |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+        changeset =
+          Repo.get!(User, id)
+          |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+
         case changeset.valid? do
           true ->
             Repo.update!(changeset)
@@ -105,4 +107,6 @@ defmodule DirectHomeApi.Model.User do
   def get_user(id) do
     Repo.get!(User, id)
   end
+
+  def s3_provider, do: Application.fetch_env!(:direct_home_api, :s3_provider)
 end

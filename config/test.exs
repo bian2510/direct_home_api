@@ -18,5 +18,8 @@ config :direct_home_api, DirectHomeApiWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+config :direct_home_api,
+  s3_provider: DirectHomeApi.Aws.MockS3
+
 # Print only warnings and errors during test
 config :logger, level: :warn
