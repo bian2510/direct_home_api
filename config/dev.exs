@@ -22,6 +22,9 @@ config :direct_home_api, DirectHomeApiWeb.Endpoint,
   check_origin: false,
   watchers: []
 
+config :direct_home_api,
+  s3_provider: DirectHomeApi.Aws.S3
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
