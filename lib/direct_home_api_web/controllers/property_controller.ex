@@ -20,6 +20,10 @@ defmodule DirectHomeApiWeb.PropertyController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    json(conn, CrudBase.find(Property, id, [:address, :subscriptions, :property_features]))
+  end
+
   def update(conn, %{"id" => id, "property" => property_params}) do
     CrudBase.update(Property, id, property_params, [:address, :subscriptions, :property_features])
     |> case do

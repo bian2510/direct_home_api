@@ -3,6 +3,8 @@ defmodule DirectHomeApi.Model.PropertyImages do
   import Ecto.Changeset
   alias DirectHomeApi.Model.Property
 
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property]}
+
   schema "property_images" do
     field :image, :string
     belongs_to :property, Property

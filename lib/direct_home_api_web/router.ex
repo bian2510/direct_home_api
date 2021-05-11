@@ -14,14 +14,15 @@ defmodule DirectHomeApiWeb.Router do
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
     get "/users/logout", UserController, :logout
-    resources "/properties", PropertyController, only: [:index, :show]
     resources "/users", UserController, only: [:show]
+    resources "/properties", PropertyController, only: [:index, :show]
+    resources "/property_images", PropertyImagesController, only: [:index, :show]
     get "/health_check", HealthController, :health_check
   end
 
   scope "/api", DirectHomeApiWeb do
     pipe_through [:api, :auth]
-    post "/users/upload_image", UserController, :upload_image
+    resources "/property_images", PropertyImagesController, only: [:update, :delete]
     resources "/users", UserController, only: [:update, :delete, :index, :show]
     post "/users/upload_image", UserController, :upload_image
     resources "/properties", PropertyController, except: [:new]

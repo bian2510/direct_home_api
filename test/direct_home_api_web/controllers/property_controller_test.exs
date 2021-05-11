@@ -220,7 +220,6 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
 
   def create_property() do
     user = UserControllerTest.create_user()
-    # {:ok, sub} = Guardian.create_token(user)
 
     Repo.insert!(%Property{
       description: "Depto 2 ambientes",
