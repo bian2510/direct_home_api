@@ -179,8 +179,6 @@ defmodule DirectHomeApiWeb.UserControllerTest do
 
       assert {:ok, %{"sucess" => "The image could be saved sucessfully"}} =
                Jason.decode(conn.resp_body)
-
-      # %{"error" => "The image not could be storage in s3"}
     end
   end
 
