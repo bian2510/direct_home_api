@@ -48,6 +48,7 @@ defmodule DirectHomeApi.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
+      {:cors_plug, "~> 2.0"},
       {:mox, "~> 1.0", only: :test}
     ]
   end
