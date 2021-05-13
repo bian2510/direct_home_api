@@ -69,7 +69,6 @@ defmodule DirectHomeApiWeb.UserController do
     conn
     |> put_status(:created)
     |> put_resp_header("authorization", token)
-
-    json(conn, %{user: user})
+    |> json(%{user: user})
   end
 end
