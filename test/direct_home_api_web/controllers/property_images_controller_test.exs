@@ -1,40 +1,22 @@
-defmodule DirectHomeApiWeb.PropertyImagesControllerTest do
+defmodule DirectHomeApiWeb.Controllers.PropertyImagesControllerTest do
   use DirectHomeApiWeb.ConnCase
+  use ExUnit.Case, async: true
 
-  alias DirectHomeApi.Model.PropertyImages
+  import Mox
+
+  alias DirectHomeApi.Model.{PropertyImages, User}
   alias DirectHomeApi.Repo
   alias DirectHomeApiWeb.{UserControllerTest, PropertyControllerTest}
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
-  @create_attrs %{
-    "description" => "Depto 2 ambientes",
-    "price" => 260_000,
-    "currency" => "USD",
-    "spaces" => 2,
-    "property_type" => "department",
-    "user_id" => nil
-  }
+  @create_attrs %{"image" => "", "property_id" => nil}
 
-  @invalid_attrs %{
-    "description" => nil,
-    "price" => nil,
-    "currency" => 2,
-    "spaces" => "algo",
-    "user_id" => nil
-  }
+  @invalid_attrs %{"image" => "", "property_id" => nil}
 
-  @update_attrs %{
-    "description" => "Monoambiente",
-    "price" => 100_000,
-    "currency" => "ARS",
-    "spaces" => 1,
-    "user_id" => nil
-  }
+  @update_attrs %{"image" => "", "property_id" => nil}
 
-  @update_invalid_attr %{
-    "user_id" => 4
-  }
+  @update_invalid_attr %{"image" => "", "property_id" => nil}
 
   describe "list all property images" do
     test "return an empty array without property images", %{conn: conn} do
@@ -62,66 +44,61 @@ defmodule DirectHomeApiWeb.PropertyImagesControllerTest do
     end
   end
 
-  # describe "create properties" do
-  #  test "create property with valid params", %{conn: conn} do
-  #    DirectHomeApi.Aws.MockS3
-  #    |> expect(:upload_files, fn _image -> {:ok, "encodefilename"} end)
-  #
-  #    image = %Plug.Upload{
-  #      content_type: "image/jpeg",
-  #      filename: "test.jpeg",
-  #      path: "test/images/some_image.jpeg"
-  #    }
-  #    ######
-  #    user = UserControllerTest.create_user()
-  #    user_id = user.id
-  #    property_param = @create_attrs |> put_in(["user_id"], user_id)
-  #
-  #    conn =
-  #      UserControllerTest.sigin_and_put_token(conn, user)
-  #      |> post(Routes.property_path(conn, :create), property: property_param)
-  #
-  #    assert conn.status == 200
-  #
-  #    assert {:ok,
-  #            %{
-  #              "address" => _address,
-  #              "currency" => _currency,
-  #              "description" => _description,
-  #              "id" => _id,
-  #              "price" => _price,
-  #              "property_type" => _property_type,
-  #              "property_features" => _property_features,
-  #              "spaces" => _spaces,
-  #              "status" => _status,
-  #              "subscriptions" => [],
-  #              "user_id" => _user_id
-  #            }} = Jason.decode(conn.resp_body)
-  #  end
-  #
-  #  test "create property with invalid param", %{conn: conn} do
-  #    user = UserControllerTest.create_user()
-  #    user_id = user.id
-  #    property_param = @invalid_attrs |> put_in(["user_id"], user_id)
-  #
-  #    conn =
-  #      UserControllerTest.sigin_and_put_token(conn, user)
-  #      |> post(Routes.property_path(conn, :create), property: property_param)
-  #
-  #    assert conn.status == 400
-  #
-  #    assert {:ok,
-  #            %{
-  #              "error" => %{
-  #                "currency" => ["is invalid"],
-  #                "description" => ["can't be blank"],
-  #                "price" => ["can't be blank"],
-  #                "property_type" => ["can't be blank"],
-  #                "spaces" => ["is invalid"]
-  #              }
-  #            }} = Jason.decode(conn.resp_body)
-  #  end
-  # end
+  describe "create property images" do
+    test "create property images with valid params", %{conn: conn} do
+      DirectHomeApi.Aws.MockS3
+      |> expect(:upload_files, fn _image -> {:ok, "encodefilename"} end)
+
+      image = %Plug.Upload{
+        content_type: "image/jpeg",
+        filename: "test.jpeg",
+        path: "test/images/some_image.jpeg"
+      }
+
+      property = PropertyControllerTest.create_property()
+      property_id = property.id
+      user = User.get_user(property.user_id)
+
+      property_image_param = @create_attrs |> put_in(["property_id"], property_id)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> post(Routes.property_images_path(conn, :create), property: property_image_param)
+
+      assert conn.status == 200
+
+      assert {:ok,
+              %{
+                "image" => _image,
+                "property_id" => _property_id
+              }} = Jason.decode(conn.resp_body)
+    end
+
+    #
+    #  test "create property with invalid param", %{conn: conn} do
+    #    user = UserControllerTest.create_user()
+    #    user_id = user.id
+    #    property_param = @invalid_attrs |> put_in(["user_id"], user_id)
+    #
+    #    conn =
+    #      UserControllerTest.sigin_and_put_token(conn, user)
+    #      |> post(Routes.property_path(conn, :create), property: property_param)
+    #
+    #    assert conn.status == 400
+    #
+    #    assert {:ok,
+    #            %{
+    #              "error" => %{
+    #                "currency" => ["is invalid"],
+    #                "description" => ["can't be blank"],
+    #                "price" => ["can't be blank"],
+    #                "property_type" => ["can't be blank"],
+    #                "spaces" => ["is invalid"]
+    #              }
+    #            }} = Jason.decode(conn.resp_body)
+    #  end
+  end
+
   #
   # describe "update property" do
   #  test "return property when data is valid", %{conn: conn} do

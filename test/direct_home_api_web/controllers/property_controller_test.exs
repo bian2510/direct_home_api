@@ -1,9 +1,9 @@
-defmodule DirectHomeApiWeb.PropertyControllerTest do
+defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
   use DirectHomeApiWeb.ConnCase
 
   alias DirectHomeApi.Model.Property
   alias DirectHomeApi.Repo
-  alias DirectHomeApiWeb.UserControllerTest
+  alias DirectHomeApiWeb.Controllers.UserControllerTest
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 

@@ -1,4 +1,4 @@
-defmodule DirectHomeApiWeb.UserControllerTest do
+defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
   use ExUnit.Case, async: true
 
