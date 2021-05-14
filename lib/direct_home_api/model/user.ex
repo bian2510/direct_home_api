@@ -2,9 +2,9 @@ defmodule DirectHomeApi.Model.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Errors.ErrorHandler
   alias DirectHomeApi.Repo
-  alias DirectHomeApi.Model.Property
+  alias DirectHomeApi.Model.{User, Property}
+  alias DirectHomeApi.Errors.ErrorHandler
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
 
@@ -69,4 +69,44 @@ defmodule DirectHomeApi.Model.User do
       :password
     ])
   end
+
+  def update_image(id, user_image) do
+    s3_provider().upload_files(user_image["photo"])
+    |> case do
+      {:ok, filename} ->
+        changeset =
+          Repo.get!(User, id)
+          |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+
+        case changeset.valid? do
+          true ->
+            Repo.update!(changeset)
+            {:ok, %{"sucess" => "The image could be saved sucessfully"}}
+
+          false ->
+            {:error, ErrorHandler.changeset_error_to_map(changeset)}
+        end
+
+      {:error, _} ->
+        {:error, %{"error" => "The image not could be storage in s3"}}
+    end
+  end
+
+  def get_by_email(email) do
+    Repo.get_by(User, email: email)
+    |> Repo.preload(:properties)
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        {:ok, user}
+    end
+  end
+
+  def get_user(id) do
+    Repo.get!(User, id)
+  end
+
+  def s3_provider, do: Application.fetch_env!(:direct_home_api, :s3_provider)
 end

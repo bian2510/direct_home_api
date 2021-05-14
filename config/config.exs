@@ -25,8 +25,23 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :direct_home_api, DirectHomeApiWeb.Auth.Guardian,
+  issuer: "direct_home_api",
+  secret_key: "iBQhSf/0w2xA+wylJuIuddBymzkDHc1XBAcrykcz8dI7ACM4nx0v/k/f1Cn+5I4I"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :ex_aws,
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  region: "us-east-2",
+  json_codec: Jason
+
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "UPDATE", "DELETE"]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

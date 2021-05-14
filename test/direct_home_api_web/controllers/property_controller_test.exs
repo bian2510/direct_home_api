@@ -82,8 +82,13 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
   describe "create properties" do
     test "create property with valid params", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property_param = @create_attrs |> put_in(["user_id"], user.id)
-      conn = post(conn, Routes.property_path(conn, :create), property: property_param)
+      user_id = user.id
+      property_param = @create_attrs |> put_in(["user_id"], user_id)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> post(Routes.property_path(conn, :create), property: property_param)
+
       assert conn.status == 200
 
       assert {:ok,
@@ -104,8 +109,13 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
 
     test "create property with invalid param", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property_param = @invalid_attrs |> put_in(["user_id"], user.id)
-      conn = post(conn, Routes.property_path(conn, :create), property: property_param)
+      user_id = user.id
+      property_param = @invalid_attrs |> put_in(["user_id"], user_id)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> post(Routes.property_path(conn, :create), property: property_param)
+
       assert conn.status == 400
 
       assert {:ok,
@@ -123,9 +133,14 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
 
   describe "update property" do
     test "return property when data is valid", %{conn: conn} do
+      user = UserControllerTest.create_user()
       property = create_property()
       property_param = @update_attrs |> put_in(["user_id"], property.id)
-      conn = put(conn, Routes.property_path(conn, :update, property.id), property: property_param)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> put(Routes.property_path(conn, :update, property.id), property: property_param)
+
       assert 200 = conn.status
       assert {:ok, property_updated} = Jason.decode(conn.resp_body)
 
@@ -151,8 +166,13 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
     end
 
     test "return errors when data is invalid", %{conn: conn} do
+      user = UserControllerTest.create_user()
       property = create_property()
-      conn = put(conn, Routes.property_path(conn, :update, property.id), property: @invalid_attrs)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> put(Routes.property_path(conn, :update, property.id), property: @invalid_attrs)
+
       assert 400 = conn.status
 
       assert {:ok, %{"error" => %{"currency" => ["is invalid"], "spaces" => ["is invalid"]}}} =
@@ -160,29 +180,47 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
     end
 
     test "return the same property when a field not could be modificated", %{conn: conn} do
+      user = UserControllerTest.create_user()
       property = create_property()
+      _property_user_id = property.user_id
       _user_id = property.user_id
 
       conn =
-        put(conn, Routes.property_path(conn, :update, property.id), property: @update_invalid_attr)
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> put(Routes.property_path(conn, :update, property.id), property: @update_invalid_attr)
+
+      _property_created = %{
+        "address" => property.address,
+        "id" => property.user_id,
+        "description" => property.description,
+        "price" => property.price,
+        "currency" => property.currency,
+        "spaces" => property.spaces,
+        "property_type" => property.property_type
+      }
 
       assert 200 = conn.status
-      assert {:ok, _response} = Jason.decode(conn.resp_body)
-      assert _user_id = Jason.decode!(conn.resp_body) |> get_in(["user_id"])
+      assert {:ok, _property_created} = Jason.decode(conn.resp_body)
+      assert _property_user_id = Jason.decode!(conn.resp_body) |> get_in(["user_id"])
     end
   end
 
   describe "delete property" do
     test "when the property exist", %{conn: conn} do
+      user = UserControllerTest.create_user()
       property = create_property()
-      conn = delete(conn, Routes.property_path(conn, :delete, property.id))
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> delete(Routes.property_path(conn, :delete, property.id))
 
       assert 201 = conn.status
     end
   end
 
   def create_property() do
-    user_id = UserControllerTest.create_user().id
+    user = UserControllerTest.create_user()
+    # {:ok, sub} = Guardian.create_token(user)
 
     Repo.insert!(%Property{
       description: "Depto 2 ambientes",
@@ -191,7 +229,7 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
       spaces: 2,
       status: true,
       property_type: "department",
-      user_id: user_id
+      user_id: user.id
     })
   end
 end

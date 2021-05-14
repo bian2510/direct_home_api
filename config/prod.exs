@@ -16,6 +16,9 @@ config :direct_home_api, DirectHomeApiWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :direct_home_api,
+  s3_provider: DirectHomeApi.Aws.S3
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

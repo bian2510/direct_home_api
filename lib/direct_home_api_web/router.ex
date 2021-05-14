@@ -5,12 +5,27 @@ defmodule DirectHomeApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug DirectHomeApiWeb.Auth.Pipeline
+  end
+
   scope "/api", DirectHomeApiWeb do
-    pipe_through :api
-    resources "/users", UserController
-    resources "/properties", PropertyController
-    resources "/property-features", PropertyFeaturesController
+    pipe_through [:api]
     get "/health_check", HealthController, :health_check
+    resources "/properties", PropertyController, only: [:index, :show]
+    resources "/property-features", PropertyFeaturesController, only: [:show]
+    resources "/users", UserController, only: [:show]
+    post "/users/signup", UserController, :create
+    post "/users/signin", UserController, :signin
+    get "/users/logout", UserController, :logout
+  end
+
+  scope "/api", DirectHomeApiWeb do
+    pipe_through [:api, :auth]
+    resources "/properties", PropertyController, except: [:new]
+    resources "/property-features", PropertyFeaturesController, only: [:index, :update, :delete]
+    resources "/users", UserController, only: [:update, :delete, :index, :show]
+    post "/users/upload_image", UserController, :upload_image
   end
 
   # Enables LiveDashboard only for development
