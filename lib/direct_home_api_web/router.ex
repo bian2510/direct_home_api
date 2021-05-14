@@ -15,6 +15,10 @@ defmodule DirectHomeApiWeb.Router do
     resources "/properties", PropertyController, only: [:index, :show]
     resources "/property-features", PropertyFeaturesController, only: [:show]
     resources "/users", UserController, only: [:show]
+
+    resources "/property_features", PropertyFeaturesController, only: [:index, :show]
+    get "/health_check", HealthController, :health_check
+
     post "/users/signup", UserController, :create
     post "/users/signin", UserController, :signin
     get "/users/logout", UserController, :logout
@@ -23,6 +27,8 @@ defmodule DirectHomeApiWeb.Router do
   scope "/api", DirectHomeApiWeb do
     pipe_through [:api, :auth]
     resources "/properties", PropertyController, except: [:new]
+    resources "/property_features", PropertyFeaturesController, except: [:new]
+
     resources "/property-features", PropertyFeaturesController, only: [:index, :update, :delete]
     resources "/users", UserController, only: [:update, :delete, :index, :show]
     post "/users/upload_image", UserController, :upload_image
