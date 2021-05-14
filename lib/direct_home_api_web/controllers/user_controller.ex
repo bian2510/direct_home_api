@@ -1,9 +1,10 @@
 defmodule DirectHomeApiWeb.UserController do
+  @callback upload_files(arg :: any) :: {:ok, map()} | {:ok, map()}
   use DirectHomeApiWeb, :controller
 
   alias DirectHomeApi.Model.User
   alias DirectHomeApi.CrudBase
-  alias DirectHomeApiWeb.Auth.{AuthorizationFunction, Guardian}
+  alias DirectHomeApiWeb.Auth.Guardian
 
   def index(conn, _params) do
     json(conn, CrudBase.all(User, [:properties]))
@@ -45,7 +46,20 @@ defmodule DirectHomeApiWeb.UserController do
       {:error, error} ->
         conn
         |> put_status(401)
-        |> json(%{"error" => error})
+        |> json(%{error: error})
+    end
+  end
+
+  def logout(conn, _) do
+    json(conn, %{})
+  end
+
+  def upload_image(conn, %{"id" => id, "photo" => user_image}) do
+    response = User.update_image(id, %{"photo" => user_image})
+
+    case response do
+      {:ok, body} -> json(conn, body)
+      {:error, body} -> json(conn, body)
     end
   end
 
@@ -55,7 +69,6 @@ defmodule DirectHomeApiWeb.UserController do
     conn
     |> put_status(:created)
     |> put_resp_header("authorization", token)
-
-    json(conn, %{user: user})
+    |> json(%{user: user})
   end
 end

@@ -8,6 +8,10 @@ defmodule DirectHomeApiWeb.PropertyFeaturesController do
     json(conn, CrudBase.all(PropertyFeatures, [:property]))
   end
 
+  def show(conn, %{"id" => id}) do
+    json(conn, CrudBase.find(PropertyFeatures, id, []))
+  end
+
   def create(conn, %{"property_features" => property_features_params}) do
     CrudBase.create(PropertyFeatures, %PropertyFeatures{}, property_features_params, [
       :property

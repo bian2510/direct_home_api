@@ -1,8 +1,13 @@
 defmodule DirectHomeApiWeb.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
+  use ExUnit.Case, async: true
+
+  import Mox
 
   alias DirectHomeApi.Model.User
   alias DirectHomeApi.Repo
+
+  setup :verify_on_exit!
 
   # Falta agregar validaciones de documento y sus tests
 
@@ -153,6 +158,30 @@ defmodule DirectHomeApiWeb.UserControllerTest do
     end
   end
 
+  describe "upload user image" do
+    test "when the user is logged", %{conn: conn} do
+      DirectHomeApi.Aws.MockS3
+      |> expect(:upload_files, fn _image -> {:ok, "encodefilename"} end)
+
+      image = %Plug.Upload{
+        content_type: "image/jpeg",
+        filename: "test.jpeg",
+        path: "test/images/some_image.jpeg"
+      }
+
+      user = create_user()
+
+      conn =
+        sigin_and_put_token(conn, user)
+        |> post(Routes.user_path(conn, :upload_image), %{"id" => user.id, "photo" => image})
+
+      assert 200 = conn.status
+
+      assert {:ok, %{"sucess" => "The image could be saved sucessfully"}} =
+               Jason.decode(conn.resp_body)
+    end
+  end
+
   describe "update user" do
     test "return user when data is valid and the user is logged", %{conn: conn} do
       user = create_user()
@@ -284,6 +313,14 @@ defmodule DirectHomeApiWeb.UserControllerTest do
 
       assert conn.status == 401
       assert {:ok, %{"error" => "not_found"}} = Jason.decode(conn.resp_body)
+    end
+  end
+
+  describe "logout user" do
+    test "logout user", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :logout))
+      assert %{} = Jason.decode!(conn.resp_body)
+      assert 200 = conn.status
     end
   end
 

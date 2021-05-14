@@ -2,9 +2,7 @@ defmodule DirectHomeApi.Model.Property do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Errors.ErrorHandler
   alias DirectHomeApi.Model.{Address, Subscription, User, PropertyFeatures}
-  alias DirectHomeApi.Repo
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :user]}
 
