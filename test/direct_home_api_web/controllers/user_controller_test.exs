@@ -109,7 +109,7 @@ defmodule DirectHomeApiWeb.UserControllerTest do
   describe "create user" do
     test "return user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert 200 = conn.status
+      assert 201 = conn.status
       assert {:ok, %{"user" => user}} = Jason.decode(conn.resp_body)
 
       map = %{
