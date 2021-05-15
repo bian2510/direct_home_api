@@ -1,6 +1,6 @@
 defmodule DirectHomeApiWeb.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import Mox
 
@@ -313,14 +313,6 @@ defmodule DirectHomeApiWeb.UserControllerTest do
 
       assert conn.status == 401
       assert {:ok, %{"error" => "not_found"}} = Jason.decode(conn.resp_body)
-    end
-  end
-
-  describe "logout user" do
-    test "logout user", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :logout))
-      assert %{} = Jason.decode!(conn.resp_body)
-      assert 200 = conn.status
     end
   end
 
