@@ -19,6 +19,5 @@ defmodule DirectHomeApi.Repo.Migrations.CreateAmenities do
     end
 
     create index(:amenities, [:property_id])
-
   end
 end

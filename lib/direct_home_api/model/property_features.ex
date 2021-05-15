@@ -27,7 +27,8 @@ defmodule DirectHomeApi.Model.PropertyFeatures do
       :livings,
       :kitchens,
       :size,
-      :property_id])
+      :property_id
+    ])
   end
 
   def changeset_create(property_features, attrs) do
@@ -38,5 +39,4 @@ defmodule DirectHomeApi.Model.PropertyFeatures do
     property_features
     |> cast(attrs, [:bathrooms, :rooms, :livings, :kitchens, :size])
   end
-
 end

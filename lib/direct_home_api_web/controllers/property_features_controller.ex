@@ -31,5 +31,4 @@ defmodule DirectHomeApiWeb.PropertyFeaturesController do
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
   end
-
 end

@@ -19,5 +19,4 @@ defmodule DirectHomeApi.Model.Amenities do
 
     timestamps()
   end
-
 end
