@@ -3,7 +3,7 @@ defmodule DirectHomeApi.CrudBase do
   alias DirectHomeApi.Errors.ErrorHandler
 
   def all(model, preloads) do
-    Repo.all(model) |> Repo.preload([preloads])
+    Repo.all(model) |> Repo.preload(preloads)
   end
 
   def find(model, id, preloads) do

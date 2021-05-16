@@ -38,6 +38,11 @@ config :ex_aws,
   region: "us-east-2",
   json_codec: Jason
 
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "UPDATE", "DELETE"]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

@@ -5,14 +5,25 @@ defmodule DirectHomeApiWeb.PropertyController do
   alias DirectHomeApi.Model.Property
 
   def index(conn, _params) do
-    json(conn, CrudBase.all(Property, [:address, :subscriptions, :property_features]))
+    json(
+      conn,
+      CrudBase.all(Property, [:address, :subscriptions, :property_features, :property_images])
+    )
+  end
+
+  def show(conn, %{"id" => id}) do
+    json(
+      conn,
+      CrudBase.find(Property, id, [:address, :subscriptions, :property_features, :property_images])
+    )
   end
 
   def create(conn, %{"property" => property_params}) do
     CrudBase.create(Property, %Property{}, property_params, [
       :address,
       :subscriptions,
-      :property_features
+      :property_features,
+      :property_images
     ])
     |> case do
       %Property{} = property -> json(conn, property)
@@ -25,7 +36,12 @@ defmodule DirectHomeApiWeb.PropertyController do
   end
 
   def update(conn, %{"id" => id, "property" => property_params}) do
-    CrudBase.update(Property, id, property_params, [:address, :subscriptions, :property_features])
+    CrudBase.update(Property, id, property_params, [
+      :address,
+      :subscriptions,
+      :property_features,
+      :property_images
+    ])
     |> case do
       %Property{} = property -> json(conn, property)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})

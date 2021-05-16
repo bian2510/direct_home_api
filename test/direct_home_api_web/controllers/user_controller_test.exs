@@ -1,6 +1,6 @@
 defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
   use DirectHomeApiWeb.ConnCase
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import Mox
 
@@ -109,7 +109,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
   describe "create user" do
     test "return user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert 200 = conn.status
+      assert 201 = conn.status
       assert {:ok, %{"user" => user}} = Jason.decode(conn.resp_body)
 
       map = %{
@@ -316,14 +316,6 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
     end
   end
 
-  describe "logout user" do
-    test "logout user", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :logout))
-      assert %{} = Jason.decode!(conn.resp_body)
-      assert 200 = conn.status
-    end
-  end
-
   def create_user() do
     Repo.insert!(%User{
       name: "Fabian",
@@ -336,7 +328,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
       password: Bcrypt.hash_pwd_salt("password"),
       type: :client
     })
-    |> Repo.preload([:properties])
+    |> Repo.preload(properties: [:address, :subscriptions, :property_features, :property_images])
   end
 
   def sigin_and_put_token(conn, user) do

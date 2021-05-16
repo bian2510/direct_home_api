@@ -5,7 +5,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
   alias DirectHomeApi.Repo
   alias DirectHomeApiWeb.Controllers.UserControllerTest
 
-  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password, :user]}
 
   @create_attrs %{
     "description" => "Depto 2 ambientes",
@@ -44,8 +44,8 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
     end
 
     test "return an array with properties", %{conn: conn} do
-      create_property()
-      create_property()
+      UserControllerTest.create_user() |> create_property()
+      UserControllerTest.create_user() |> create_property()
       conn = get(conn, Routes.property_path(conn, :index))
       assert conn.status == 200
 
@@ -76,6 +76,28 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
                  "user_id" => _user_id2
                }
              ] = Jason.decode!(conn.resp_body)
+    end
+  end
+
+  describe "show property" do
+    test "return a specific user", %{conn: conn} do
+      property = UserControllerTest.create_user() |> create_property()
+      conn = get(conn, Routes.property_path(conn, :show, property.id))
+      assert 200 = conn.status
+
+      assert %{
+               "address" => _address2,
+               "currency" => _currency2,
+               "description" => _description2,
+               "id" => _id2,
+               "price" => _price2,
+               "property_type" => _property_type2,
+               "property_features" => _property_features2,
+               "spaces" => _spaces2,
+               "status" => _status2,
+               "subscriptions" => [],
+               "user_id" => _user_id2
+             } = Jason.decode!(conn.resp_body)
     end
   end
 
@@ -134,7 +156,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
   describe "update property" do
     test "return property when data is valid", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property = create_property()
+      property = create_property(user)
       property_param = @update_attrs |> put_in(["user_id"], property.id)
 
       conn =
@@ -167,7 +189,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
 
     test "return errors when data is invalid", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property = create_property()
+      property = create_property(user)
 
       conn =
         UserControllerTest.sigin_and_put_token(conn, user)
@@ -181,7 +203,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
 
     test "return the same property when a field not could be modificated", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property = create_property()
+      property = create_property(user)
       _property_user_id = property.user_id
       _user_id = property.user_id
 
@@ -208,7 +230,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
   describe "delete property" do
     test "when the property exist", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property = create_property()
+      property = create_property(user)
 
       conn =
         UserControllerTest.sigin_and_put_token(conn, user)
@@ -218,9 +240,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
     end
   end
 
-  def create_property() do
-    user = UserControllerTest.create_user()
-
+  def create_property(user) do
     Repo.insert!(%Property{
       description: "Depto 2 ambientes",
       price: 260_000,
@@ -230,5 +250,6 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
       property_type: "department",
       user_id: user.id
     })
+    |> Repo.preload([:address, :subscriptions, :property_features, :property_images])
   end
 end
