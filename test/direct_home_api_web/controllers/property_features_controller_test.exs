@@ -153,6 +153,41 @@ defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
       assert 200 = conn.status
       assert {:ok, _property_features_updated} = Jason.decode(conn.resp_body)
     end
+
+    test "return property_features when data is invalid", %{conn: conn} do
+      user = UserControllerTest.create_user()
+      property = PropertyControllerTest.create_property(user)
+      property_id = property.id
+      property_feature = create_property_features(property)
+      features_param = @invalid_attrs |> put_in(["property_id"], property_id)
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> put(Routes.property_features_path(conn, :update, property_feature.id),
+          property_features: features_param
+        )
+
+      assert 400 = conn.status
+      assert {:ok, %{
+        "error" => %{
+          "livings" => ["is invalid"],
+          "size" => ["is invalid"]
+        }
+      }} = Jason.decode(conn.resp_body)
+    end
+  end
+
+  describe "delete property_features" do
+    test "when the property_features exist", %{conn: conn} do
+      user = UserControllerTest.create_user()
+      property_feature = PropertyControllerTest.create_property(user) |> create_property_features()
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> delete(Routes.property_features_path(conn, :delete, property_feature.id))
+
+      assert 201 = conn.status
+    end
   end
 
   def create_property_features(property) do
