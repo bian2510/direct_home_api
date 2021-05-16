@@ -44,10 +44,8 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
     end
 
     test "return an array with properties", %{conn: conn} do
-      user_1 = UserControllerTest.create_user()
-      user_2 = UserControllerTest.create_user()
-      create_property(user_1)
-      create_property(user_2)
+      UserControllerTest.create_user() |> create_property()
+      UserControllerTest.create_user() |> create_property()
       conn = get(conn, Routes.property_path(conn, :index))
       assert conn.status == 200
 
@@ -78,6 +76,28 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
                  "user_id" => _user_id2
                }
              ] = Jason.decode!(conn.resp_body)
+    end
+  end
+
+  describe "show property" do
+    test "return a specific user", %{conn: conn} do
+      property = UserControllerTest.create_user() |> create_property()
+      conn = get(conn, Routes.property_path(conn, :show, property.id))
+      assert 200 = conn.status
+
+      assert %{
+        "address" => _address2,
+        "currency" => _currency2,
+        "description" => _description2,
+        "id" => _id2,
+        "price" => _price2,
+        "property_type" => _property_type2,
+        "property_features" => _property_features2,
+        "spaces" => _spaces2,
+        "status" => _status2,
+        "subscriptions" => [],
+        "user_id" => _user_id2
+             } = Jason.decode!(conn.resp_body)
     end
   end
 
