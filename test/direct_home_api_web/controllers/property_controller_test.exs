@@ -229,6 +229,7 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
       status: true,
       property_type: "department",
       user_id: user.id
-    }) |> Repo.preload([:address, :subscriptions, :property_features, :property_images]) |> IO.inspect
+    })
+    |> Repo.preload([:address, :subscriptions, :property_features, :property_images])
   end
 end
