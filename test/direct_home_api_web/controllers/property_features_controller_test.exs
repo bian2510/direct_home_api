@@ -1,7 +1,7 @@
 defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
   use DirectHomeApiWeb.ConnCase
 
-  alias DirectHomeApi.Model.{PropertyFeatures, Property}
+  alias DirectHomeApi.Model.PropertyFeatures
   alias DirectHomeApi.Repo
   alias DirectHomeApiWeb.{PropertyControllerTest, UserControllerTest}
 
