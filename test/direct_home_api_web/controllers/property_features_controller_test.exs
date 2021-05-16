@@ -168,19 +168,23 @@ defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
         )
 
       assert 400 = conn.status
-      assert {:ok, %{
-        "error" => %{
-          "livings" => ["is invalid"],
-          "size" => ["is invalid"]
-        }
-      }} = Jason.decode(conn.resp_body)
+
+      assert {:ok,
+              %{
+                "error" => %{
+                  "livings" => ["is invalid"],
+                  "size" => ["is invalid"]
+                }
+              }} = Jason.decode(conn.resp_body)
     end
   end
 
   describe "delete property_features" do
     test "when the property_features exist", %{conn: conn} do
       user = UserControllerTest.create_user()
-      property_feature = PropertyControllerTest.create_property(user) |> create_property_features()
+
+      property_feature =
+        PropertyControllerTest.create_property(user) |> create_property_features()
 
       conn =
         UserControllerTest.sigin_and_put_token(conn, user)
