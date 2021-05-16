@@ -5,7 +5,7 @@ defmodule DirectHomeApiWeb.PropertyFeaturesController do
   alias DirectHomeApi.Model.PropertyFeatures
 
   def index(conn, _params) do
-    json(conn, CrudBase.all(PropertyFeatures, [:property]))
+    json(conn, CrudBase.all(PropertyFeatures, []))
   end
 
   def show(conn, %{"id" => id}) do

@@ -64,6 +64,27 @@ defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
     end
   end
 
+  describe "show property" do
+    test "return a specific user", %{conn: conn} do
+      property_features =
+        UserControllerTest.create_user()
+        |> PropertyControllerTest.create_property()
+        |> create_property_features()
+
+      conn = get(conn, Routes.property_features_path(conn, :show, property_features.id))
+      assert 200 = conn.status
+
+      assert %{
+               "bathrooms" => _bathrooms1,
+               "rooms" => _rooms1,
+               "livings" => _livings1,
+               "kitchens" => _kitchenS1,
+               "size" => _size1,
+               "property_id" => _property_id1
+             } = Jason.decode!(conn.resp_body)
+    end
+  end
+
   describe "create property_features" do
     test "create features with valid params", %{conn: conn} do
       user = UserControllerTest.create_user()

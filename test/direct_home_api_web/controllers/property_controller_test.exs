@@ -86,17 +86,17 @@ defmodule DirectHomeApiWeb.PropertyControllerTest do
       assert 200 = conn.status
 
       assert %{
-        "address" => _address2,
-        "currency" => _currency2,
-        "description" => _description2,
-        "id" => _id2,
-        "price" => _price2,
-        "property_type" => _property_type2,
-        "property_features" => _property_features2,
-        "spaces" => _spaces2,
-        "status" => _status2,
-        "subscriptions" => [],
-        "user_id" => _user_id2
+               "address" => _address2,
+               "currency" => _currency2,
+               "description" => _description2,
+               "id" => _id2,
+               "price" => _price2,
+               "property_type" => _property_type2,
+               "property_features" => _property_features2,
+               "spaces" => _spaces2,
+               "status" => _status2,
+               "subscriptions" => [],
+               "user_id" => _user_id2
              } = Jason.decode!(conn.resp_body)
     end
   end
