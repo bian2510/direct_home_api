@@ -177,7 +177,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
 
       assert 200 = conn.status
 
-      assert {:ok, %{"sucess" => "The image could be saved sucessfully"}} =
+      assert {:ok, %{"sucess" => "The image was saved sucessfully"}} =
                Jason.decode(conn.resp_body)
     end
   end

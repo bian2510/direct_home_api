@@ -81,7 +81,7 @@ defmodule DirectHomeApi.Model.User do
         case changeset.valid? do
           true ->
             Repo.update!(changeset)
-            {:ok, %{"sucess" => "The image could be saved sucessfully"}}
+            {:ok, %{"sucess" => "The image was saved sucessfully"}}
 
           false ->
             {:error, ErrorHandler.changeset_error_to_map(changeset)}
