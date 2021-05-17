@@ -1,34 +1,43 @@
 defmodule DirectHomeApiWeb.Controllers.PropertyImagesControllerTest do
   use DirectHomeApiWeb.ConnCase
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   import Mox
 
   alias DirectHomeApi.Model.{PropertyImages, User}
+  alias DirectHomeApiWeb.Controllers.{UserControllerTest, PropertyControllerTest}
   alias DirectHomeApi.Repo
-  alias DirectHomeApiWeb.{UserControllerTest, PropertyControllerTest}
 
-  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :password]}
+  @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property]}
 
-  @create_attrs %{"image" => "", "property_id" => nil}
+  @create_attrs %{
+    "image" => %Plug.Upload{
+      content_type: "image/jpeg",
+      filename: "test.jpeg",
+      path: "test/images/some_image.jpeg"
+    },
+    "property_id" => nil
+  }
 
-  @invalid_attrs %{"image" => "", "property_id" => nil}
+  @invalid_attrs %{"image" => "invalid", "property_id" => nil}
 
   @update_attrs %{"image" => "", "property_id" => nil}
 
-  @update_invalid_attr %{"image" => "", "property_id" => nil}
-
   describe "list all property images" do
-    test "return an empty array without property images", %{conn: conn} do
-      conn = get(conn, Routes.property_images_path(conn, :index))
-      assert conn.status == 200
-      assert {:ok, []} = Jason.decode(conn.resp_body)
-    end
-
     test "return an array with property images", %{conn: conn} do
-      create_property_images()
-      create_property_images()
-      conn = get(conn, Routes.property_images_path(conn, :index))
+      user = UserControllerTest.create_user()
+
+      PropertyControllerTest.create_property(user)
+      |> create_property_images()
+
+      UserControllerTest.create_user()
+      |> PropertyControllerTest.create_property()
+      |> create_property_images()
+
+      conn =
+        UserControllerTest.sigin_and_put_token(conn, user)
+        |> get(Routes.property_images_path(conn, :index))
+
       assert conn.status == 200
 
       assert [
@@ -42,20 +51,32 @@ defmodule DirectHomeApiWeb.Controllers.PropertyImagesControllerTest do
                }
              ] = Jason.decode!(conn.resp_body)
     end
+
+    test "return unauthorized", %{conn: conn} do
+      user = UserControllerTest.create_user()
+
+      PropertyControllerTest.create_property(user)
+      |> create_property_images()
+
+      UserControllerTest.create_user()
+      |> PropertyControllerTest.create_property()
+      |> create_property_images()
+
+      conn = get(conn, Routes.property_images_path(conn, :index))
+      assert conn.status == 401
+
+      assert %{"error" => "unauthenticated"} = Jason.decode!(conn.resp_body)
+    end
   end
 
   describe "create property images" do
     test "create property images with valid params", %{conn: conn} do
       DirectHomeApi.Aws.MockS3
-      |> expect(:upload_files, fn _image -> {:ok, "encodefilename"} end)
+      |> expect(:upload_files, fn _image ->
+        {:ok, System.get_env("S3_URL") <> "encodefilename.jpeg"}
+      end)
 
-      image = %Plug.Upload{
-        content_type: "image/jpeg",
-        filename: "test.jpeg",
-        path: "test/images/some_image.jpeg"
-      }
-
-      property = PropertyControllerTest.create_property()
+      property = UserControllerTest.create_user() |> PropertyControllerTest.create_property()
       property_id = property.id
       user = User.get_user(property.user_id)
 
@@ -63,7 +84,7 @@ defmodule DirectHomeApiWeb.Controllers.PropertyImagesControllerTest do
 
       conn =
         UserControllerTest.sigin_and_put_token(conn, user)
-        |> post(Routes.property_images_path(conn, :create), property: property_image_param)
+        |> post(Routes.property_images_path(conn, :create), property_images: property_image_param)
 
       assert conn.status == 200
 
@@ -187,11 +208,9 @@ defmodule DirectHomeApiWeb.Controllers.PropertyImagesControllerTest do
   #  end
   # end
 
-  def create_property_images() do
-    property_id = PropertyControllerTest.create_property().id
-
+  def create_property_images(property) do
     Repo.insert!(%PropertyImages{
-      property_id: property_id,
+      property_id: property.id,
       image: "test/images/some_image.jpeg"
     })
   end

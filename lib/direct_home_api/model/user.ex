@@ -76,7 +76,7 @@ defmodule DirectHomeApi.Model.User do
       {:ok, filename} ->
         changeset =
           Repo.get!(User, id)
-          |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+          |> cast(%{"photo" => filename}, [:photo])
 
         case changeset.valid? do
           true ->
