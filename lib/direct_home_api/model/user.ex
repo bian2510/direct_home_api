@@ -41,7 +41,6 @@ defmodule DirectHomeApi.Model.User do
   end
 
   def changeset_create(user, attrs) do
-    changeset =
       changeset(user, attrs)
       |> validate_required([
         :name,

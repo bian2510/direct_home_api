@@ -32,7 +32,7 @@ defmodule DirectHomeApi.Model.PropertyFeatures do
   end
 
   def changeset_create(property_features, attrs) do
-    changeset = changeset(property_features, attrs)
+    changeset(property_features, attrs)
   end
 
   def changeset_update(property_features, attrs) do
