@@ -65,9 +65,8 @@ defmodule DirectHomeApiWeb.UserController do
   end
 
   def upload_image(conn, %{"id" => id, "photo" => user_image}) do
-    response = User.update_image(id, %{"photo" => user_image})
-
-    case response do
+    User.update_image(id, %{"photo" => user_image})
+    |> case do
       {:ok, body} -> json(conn, body)
       {:error, body} -> json(conn, body)
     end

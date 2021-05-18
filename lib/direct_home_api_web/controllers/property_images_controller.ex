@@ -9,10 +9,10 @@ defmodule DirectHomeApiWeb.PropertyImagesController do
   end
 
   def create(conn, %{"property_images" => property_images_params}) do
-    CrudBase.create(PropertyImages, %PropertyImages{}, property_images_params, [])
+    PropertyImages.create(PropertyImages, %PropertyImages{}, property_images_params)
     |> case do
-      %PropertyImages{} = property_images -> json(conn, property_images)
-      {:error, error} -> conn |> put_status(400) |> json(%{error: error})
+      {:ok, body} -> json(conn, body)
+      {:error, body} -> conn |> put_status(400) |> json(body)
     end
   end
 
@@ -21,10 +21,10 @@ defmodule DirectHomeApiWeb.PropertyImagesController do
   end
 
   def update(conn, %{"id" => id, "property_images" => property_images_params}) do
-    CrudBase.update(PropertyImages, id, property_images_params, [])
+    PropertyImages.update(id, PropertyImages, property_images_params)
     |> case do
-      %PropertyImages{} = property_images -> json(conn, property_images)
-      {:error, error} -> conn |> put_status(400) |> json(%{error: error})
+      {:ok, body} -> json(conn, body)
+      {:error, body} -> conn |> put_status(400) |> json(body)
     end
   end
 
