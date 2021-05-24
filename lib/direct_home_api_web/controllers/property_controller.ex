@@ -7,14 +7,14 @@ defmodule DirectHomeApiWeb.PropertyController do
   def index(conn, _params) do
     json(
       conn,
-      CrudBase.all(Property, [:address, :subscriptions, :property_features, :property_images])
+      CrudBase.all(Property, preloads())
     )
   end
 
   def show(conn, %{"id" => id}) do
     json(
       conn,
-      CrudBase.find(Property, id, [:address, :subscriptions, :property_features, :property_images])
+      CrudBase.find(Property, id, preloads())
     )
   end
 
@@ -29,6 +29,10 @@ defmodule DirectHomeApiWeb.PropertyController do
       %Property{} = property -> json(conn, property)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
     end
+  end
+
+  def show(conn, %{"id" => id}) do
+    json(conn, CrudBase.find(Property, id, [:address, :subscriptions, :property_features]))
   end
 
   def update(conn, %{"id" => id, "property" => property_params}) do
@@ -47,5 +51,9 @@ defmodule DirectHomeApiWeb.PropertyController do
   def delete(conn, %{"id" => id}) do
     CrudBase.delete(Property, id)
     conn |> put_status(201) |> json(%{})
+  end
+
+  defp preloads do
+    [:address, :subscriptions, :property_features, :property_images]
   end
 end

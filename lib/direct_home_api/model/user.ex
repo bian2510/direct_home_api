@@ -41,19 +41,19 @@ defmodule DirectHomeApi.Model.User do
   end
 
   def changeset_create(user, attrs) do
-      changeset(user, attrs)
-      |> validate_required([
-        :name,
-        :last_name,
-        :email,
-        :password,
-        :type
-      ])
-      |> unique_constraint([:email])
-      |> validate_format(:email, ~r/@/)
-      |> unsafe_validate_unique([:email], Repo)
-      |> validate_length(:password, min: 8)
-      |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
+    changeset(user, attrs)
+    |> validate_required([
+      :name,
+      :last_name,
+      :email,
+      :password,
+      :type
+    ])
+    |> unique_constraint([:email])
+    |> validate_format(:email, ~r/@/)
+    |> unsafe_validate_unique([:email], Repo)
+    |> validate_length(:password, min: 8)
+    |> put_change(:password, Bcrypt.hash_pwd_salt(attrs["password"]))
   end
 
   def changeset_update(user, attrs) do
@@ -75,12 +75,12 @@ defmodule DirectHomeApi.Model.User do
       {:ok, filename} ->
         changeset =
           Repo.get!(User, id)
-          |> cast(%{"photo" => System.get_env("S3_URL") <> filename}, [:photo])
+          |> cast(%{"photo" => filename}, [:photo])
 
         case changeset.valid? do
           true ->
             Repo.update!(changeset)
-            {:ok, %{"sucess" => "The image could be saved sucessfully"}}
+            {:ok, %{"sucess" => "The image was saved sucessfully"}}
 
           false ->
             {:error, ErrorHandler.changeset_error_to_map(changeset)}

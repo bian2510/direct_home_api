@@ -13,7 +13,7 @@ defmodule DirectHomeApi.Aws.S3 do
     ])
     |> ExAws.request()
     |> case do
-      {:ok, _} -> {:ok, file_name}
+      {:ok, _} -> {:ok, System.get_env("S3_URL") <> file_name}
       {:error, error} -> {:error, error}
     end
   end

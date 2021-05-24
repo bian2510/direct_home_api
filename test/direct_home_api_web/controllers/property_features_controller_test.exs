@@ -3,7 +3,7 @@ defmodule DirectHomeApiWeb.PropertyFeaturesControllerTest do
 
   alias DirectHomeApi.Model.PropertyFeatures
   alias DirectHomeApi.Repo
-  alias DirectHomeApiWeb.{PropertyControllerTest, UserControllerTest}
+  alias DirectHomeApiWeb.Controllers.{PropertyControllerTest, UserControllerTest}
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :property]}
 
