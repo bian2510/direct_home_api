@@ -54,6 +54,6 @@ defmodule DirectHomeApiWeb.PropertyController do
   end
 
   defp preloads do
-    [:address, :subscriptions, :property_features, :property_images]
+    [:address, :amenities, :subscriptions, :property_features, :property_images]
   end
 end
