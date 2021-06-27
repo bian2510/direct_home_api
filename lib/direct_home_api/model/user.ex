@@ -93,7 +93,7 @@ defmodule DirectHomeApi.Model.User do
 
   def get_by_email(email) do
     Repo.get_by(User, email: email)
-    |> Repo.preload(properties: [:address, :subscriptions, :property_features, :property_images])
+    |> Repo.preload(properties: Property.preloads())
     |> case do
       nil ->
         {:error, :not_found}
@@ -108,4 +108,8 @@ defmodule DirectHomeApi.Model.User do
   end
 
   def s3_provider, do: Application.fetch_env!(:direct_home_api, :s3_provider)
+
+  def preloads do
+    [properties: Property.preloads()]
+  end
 end

@@ -250,6 +250,6 @@ defmodule DirectHomeApiWeb.Controllers.PropertyControllerTest do
       property_type: "department",
       user_id: user.id
     })
-    |> Repo.preload([:address, :subscriptions, :property_features, :property_images])
+    |> Repo.preload(Property.preloads())
   end
 end

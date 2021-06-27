@@ -4,7 +4,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
 
   import Mox
 
-  alias DirectHomeApi.Model.User
+  alias DirectHomeApi.Model.{User, Property}
   alias DirectHomeApi.Repo
 
   setup :verify_on_exit!
@@ -328,7 +328,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
       password: Bcrypt.hash_pwd_salt("password"),
       type: :client
     })
-    |> Repo.preload(properties: [:address, :subscriptions, :property_features, :property_images])
+    |> Repo.preload(properties: Property.preloads())
   end
 
   def sigin_and_put_token(conn, user) do

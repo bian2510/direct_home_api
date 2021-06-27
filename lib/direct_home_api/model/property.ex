@@ -2,7 +2,14 @@ defmodule DirectHomeApi.Model.Property do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias DirectHomeApi.Model.{Address, Amenities, Subscription, User, PropertyFeatures, PropertyImages}
+  alias DirectHomeApi.Model.{
+    Address,
+    Amenities,
+    Subscription,
+    User,
+    PropertyFeatures,
+    PropertyImages
+  }
 
   @derive {Jason.Encoder, except: [:__meta__, :inserted_at, :updated_at, :user]}
 
@@ -44,5 +51,9 @@ defmodule DirectHomeApi.Model.Property do
   def changeset_update(property, attrs) do
     property
     |> cast(attrs, [:description, :price, :currency, :spaces, :property_type])
+  end
+
+  def preloads do
+    [:address, :amenities, :subscriptions, :property_features, :property_images]
   end
 end
