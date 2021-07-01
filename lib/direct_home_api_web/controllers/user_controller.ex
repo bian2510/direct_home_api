@@ -9,16 +9,15 @@ defmodule DirectHomeApiWeb.UserController do
   def index(conn, _params) do
     json(
       conn,
-      CrudBase.all(User,
-        preloads()
+      CrudBase.all(
+        User,
+        User.preloads()
       )
     )
   end
 
   def create(conn, %{"user" => user_params}) do
-    CrudBase.create(User, %User{}, user_params,
-      preloads()
-    )
+    CrudBase.create(User, %User{}, user_params, User.preloads())
     |> case do
       %User{} = user -> return_user_created(conn, user)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
@@ -28,16 +27,12 @@ defmodule DirectHomeApiWeb.UserController do
   def show(conn, %{"id" => id}) do
     json(
       conn,
-      CrudBase.find(User, id,
-        preloads()
-      )
+      CrudBase.find(User, id, User.preloads())
     )
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    CrudBase.update(User, id, user_params,
-      preloads()
-    )
+    CrudBase.update(User, id, user_params, User.preloads())
     |> case do
       %User{} = user -> json(conn, user)
       {:error, error} -> conn |> put_status(400) |> json(%{error: error})
@@ -79,9 +74,5 @@ defmodule DirectHomeApiWeb.UserController do
     |> put_status(:created)
     |> put_resp_header("authorization", token)
     |> json(%{user: user})
-  end
-
-  defp preloads do
-    [properties: [:address, :subscriptions, :property_features, :property_images]]
   end
 end
