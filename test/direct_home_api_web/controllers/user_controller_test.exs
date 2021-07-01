@@ -19,7 +19,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
     "email" => "bian251091@gmail.com",
     "name" => "Carlos",
     "last_name" => "Hernandez",
-    "phone" => 1_173_677_873,
+    "phone" => "1173677873",
     "password" => "boni2510*",
     "photo" => "algunaphoto",
     "type" => "client"
@@ -35,7 +35,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
   }
 
   @update_attrs %{
-    "phone" => 1_123_423_422,
+    "phone" => "1123423422",
     "photo" => "otra_photo"
   }
 
@@ -119,7 +119,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
         "email" => "bian251091@gmail.com",
         "name" => "Carlos",
         "last_name" => "Hernandez",
-        "phone" => 1_173_677_873,
+        "phone" => "1173677873",
         "photo" => "algunaphoto",
         "properties" => [],
         "type" => "client"
@@ -320,7 +320,7 @@ defmodule DirectHomeApiWeb.Controllers.UserControllerTest do
     Repo.insert!(%User{
       name: "Fabian",
       last_name: "Hernandez",
-      phone: random_num(),
+      phone: "#{random_num()}",
       email: "bian#{random_num()}@gmail.com",
       photo: "unaphoto",
       document: random_num(),
